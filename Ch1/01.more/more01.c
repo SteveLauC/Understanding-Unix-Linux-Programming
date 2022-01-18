@@ -1,6 +1,5 @@
 /*
- * more01.c - version 0.1 of more
- * read and print 24 lines then pause for a few special commands
+ * more01.c - version 0.1 of more * read and print 24 lines then pause for a few special commands
  */
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,7 +41,6 @@ void do_more(FILE * fp){
     while (NULL != fgets(line, LINELEN, fp)) {
         if (num_of_line == PAGELEN) {
             reply = see_more();
-//            printf("debug: reply = %d", reply);
             if (reply == 0) {
                 break;
             }
@@ -60,20 +58,21 @@ void do_more(FILE * fp){
  * q means quit, space means yes, CR means one line
  */
 int see_more(){
-//    printf("debug: see_more() is executed");
     int c = 0;
     printf("\033[7m more? \033[m");
+
+	// This is an infinite loop cause we are reading from stdin, we will never reach EOF
+	// unless we manually press CTRL+D
+	// But if we get 'q' ' ' '\n', break the loop and exit in advance.
     while ((c = getchar()) != EOF) {
+		/* printf("deug: c=%c\n", c); */
         if (c == 'q') {
-//            printf("debug: quit");
             return 0;
         }
         if (c == ' ') {
-//            printf("debug: one more page");
             return PAGELEN;
         }
         if (c=='\n') {
-//            printf("debug: one more line");
             return 1;
         }
     }
