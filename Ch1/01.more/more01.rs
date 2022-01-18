@@ -48,9 +48,6 @@ fn do_more<S: io::BufRead>(mut p: S) {
                 lines -= reply;
             }
         }
-        // NOTE: fix newline
-        // trim `newline` from string
-        // let mut buf: String = buf.trim_end().into();
 
         // push lines to queue
         for slice in buf.as_bytes().chunks(LINELEN as usize) {
@@ -78,9 +75,8 @@ fn see_more() -> i32 {
     io::stdout().flush().unwrap();
     let mut char_buf: [u8; 1] = [0];
 
-    // println!("debug: {}", selection);
     let selection = loop{
-        io::stdin().read_exact(&mut char_buf);
+        io::stdin().read_exact(&mut char_buf).unwrap();
         match char_buf[0] as char {
             'q' => break 0,
             ' ' => {
@@ -94,7 +90,3 @@ fn see_more() -> i32 {
     };
     selection
 }
-
-//     let mut c = [0_u8];
-//     std::io::stdin().read_exact(&mut c).unwrap();
-// }
