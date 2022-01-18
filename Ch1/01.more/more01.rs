@@ -80,7 +80,7 @@ fn see_more() -> i32 {
 
     // println!("debug: {}", selection);
     let selection = loop{
-        io::stdin().read_exact(&mut char_buf).unwrap();
+        io::stdin().read_exact(&mut char_buf);
         match char_buf[0] as char {
             'q' => break 0,
             ' ' => {
@@ -94,3 +94,7 @@ fn see_more() -> i32 {
     };
     selection
 }
+
+//     let mut c = [0_u8];
+//     std::io::stdin().read_exact(&mut c).unwrap();
+// }
