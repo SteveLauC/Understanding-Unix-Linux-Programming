@@ -1,12 +1,7 @@
-// Difficulties:
-// 1. How to simulate fgets() in Rust
-// My solution: Read the whole line into a string, if this string is longer than LINELEN, split it and push
-// it into a queue, and use the queue to control its output.
-
 use std::collections::VecDeque;
 use std::env;
 use std::fs::File;
-use std::io::{self, Read, Write};
+use std::io::{self, Read, Write, BufReader};
 
 const PAGELEN: i32 = 24;
 const LINELEN: i32 = 511; // to make the behavior consistent with more01.c
@@ -33,6 +28,7 @@ fn do_more<S: io::BufRead>(mut p: S) {
     let mut buf: String = String::new();
     let mut lines: i32 = 0; // how many lines have been read
     let mut line_queue: VecDeque<String> = VecDeque::new();
+    let tty: File = File::open("/dev/tty").unwrap();
 
     while let Ok(bytes) = p.read_line(&mut buf) {
         // return when we reached EOF
@@ -41,7 +37,8 @@ fn do_more<S: io::BufRead>(mut p: S) {
         }
         // Already read PAGELEN lines, ask for further instruction.
         if lines == PAGELEN {
-            let reply: i32 = see_more();
+            let buffered_tty: BufReader<&File> = BufReader::new(&tty);
+            let reply: i32 = see_more(buffered_tty);
             if reply == 0 {
                 break;
             } else {
@@ -70,13 +67,14 @@ fn do_more<S: io::BufRead>(mut p: S) {
     }
 }
 
-fn see_more() -> i32 {
+fn see_more(mut cmd: BufReader<&File>) -> i32 {
     print!("\x1b[93mmore?\x1b[0m");
     io::stdout().flush().unwrap();
     let mut char_buf: [u8; 1] = [0];
 
+    // println!("debug: {}", selection);
     loop{
-        io::stdin().read_exact(&mut char_buf).unwrap();
+        cmd.read_exact(&mut char_buf).unwrap();
         match char_buf[0] as char {
             'q' => break 0,
             ' ' => {
