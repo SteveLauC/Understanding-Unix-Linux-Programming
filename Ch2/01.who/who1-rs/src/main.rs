@@ -20,7 +20,7 @@ fn show_info(ut_buf_p: &utmpx) {
     print!("{}", date_str);
     print!(" ");
     unsafe {
-        print!("{}", ffi::CStr::from_ptr(ut_buf_p.ut_host.as_ptr()).to_str().unwrap());
+        print!("({})", ffi::CStr::from_ptr(ut_buf_p.ut_host.as_ptr()).to_str().unwrap());
     }
     println!();
 }

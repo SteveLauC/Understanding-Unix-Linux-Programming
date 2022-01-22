@@ -22,7 +22,7 @@ void show_info(struct utmp * ut_buf_p){
     printf(" ");
     long sec = (long)ut_buf_p->ut_tv.tv_sec;
     printf("%s", ctime(&sec));
-    printf("%s", ut_buf_p->ut_host);
+    printf("(%s)", ut_buf_p->ut_host);
     printf("\n");
 }
 
