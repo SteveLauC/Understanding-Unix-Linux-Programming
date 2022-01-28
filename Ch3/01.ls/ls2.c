@@ -4,6 +4,11 @@
  * action: if no arg, use `.`. else, list files in args
  * note: uses stat and pwd.h and grp.h
  * BUG: try ls2 /tmp [no such file or directory]
+ * reason: the arg of do_stat() is only the name of file
+ *         but not the path, so stat() will seek that file
+ *         in the current working directory. if the arg given to
+ *         this program is not ".", it will absolutely print
+ *         no such file or directory.
 */
 
 #include <stdio.h>
