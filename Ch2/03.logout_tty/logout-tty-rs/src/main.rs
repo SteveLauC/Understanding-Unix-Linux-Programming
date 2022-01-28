@@ -8,7 +8,7 @@ use std::ffi::CStr;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use libc::{utmpx, DEAD_PROCESS};
-use LogoutError::*;
+use crate::LogoutError::*;
 
 enum LogoutError {
     OpenError(String),
