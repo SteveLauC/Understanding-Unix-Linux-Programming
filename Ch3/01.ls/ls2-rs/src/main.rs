@@ -59,6 +59,12 @@ fn show_file_info(filename: String, md: Metadata) {
 fn mode_to_letter(mode: mode_t) -> String {
     let mut mode_str: [char; 10] = ['-'; 10];
     // file type
+    
+    // another rusty way to get filetype on UNIX is to use `std::os::unix::fs::FileTypeExt`
+    // but honestly, it's not suitable here for the reason that `mode_to_letter()` should
+    // only have one arg of type mode_t
+    // If u wanna use FileTypeExt, you need to get the Metadata, call file_type() on that...
+    // which will break my code arch.
     if is_dir(mode) {
         mode_str[0] = 'd';
     }
