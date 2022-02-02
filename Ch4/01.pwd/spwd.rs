@@ -1,7 +1,8 @@
-use std::fs::{metadata, Metadata,read_dir};
+use std::fs::{metadata, Metadata,read_dir, ReadDir, DirEntry};
 use std::os::unix::fs::MetadataExt;
 use std::process;
 use std::env::set_current_dir;
+use std::io;
 
 fn get_inode(filename: &str) -> u64{
     let md: Metadata = match metadata(filename) {
@@ -14,27 +15,17 @@ fn get_inode(filename: &str) -> u64{
     md.ino()
 }
 
-fn inode_to_name(this_inode: u64) -> String {
-    if let Ok(rd) = read_dir(".") {
-        for item in rd {
-            if let Ok(de) = item {
-                match de.metadata() {
-                    Ok(meta) => {
-                        if meta.ino() == this_inode {
-                            return de.file_name().into_string().expect("cannot convert this OsStirng to String");
-                        }
-                    },
-                    Err(msg) => {
-                        eprintln!("cannot inspect some entries in current dir {:?}", msg);
-                    }
-                }
-            }else{
-                eprintln!("cannot inspect some entries in current dir");
-            }
+fn inode_to_name(this_inode: u64) -> io::Result<String> {
+    let mut name: String = String::new();
+    let rd: ReadDir = read_dir(".")?;
+    for item in rd {
+        let de: DirEntry = item?;
+        let md: Metadata = de.metadata()?;
+        if md.ino() == this_inode {
+           name = de.file_name().into_string().expect("cannot convert OsStrng to String");
         }
     }
-    eprintln!("error looking for inode:{}", this_inode);
-    process::exit(1);
+    Ok(name)
 }
 
 fn print_path_to(inode: u64) {
@@ -46,7 +37,13 @@ fn print_path_to(inode: u64) {
             eprintln!("cannot change working directory to the parent directory");
             process::exit(-1);
         }
-        name = inode_to_name(inode);
+        name = match inode_to_name(inode) {
+            Ok(n) => n,
+            Err(msg) => {
+                eprintln!("cannot query the filename of inode {} {}", inode, msg);
+                process::exit(-1);
+            }
+        };
         my_inode = get_inode(".");
         print_path_to(my_inode);
         print!("/{}", name);
