@@ -53,7 +53,9 @@ void inode_to_name(ino_t this_inode, char * namebuf, int buflen) {
     }
 
     while ((dirent_ptr=readdir(dir_ptr)) != NULL) {
-        if (dirent_ptr->d_ino == this_inode) {
+        struct stat buf;
+        stat(dirent_ptr->d_name, &buf);
+        if (buf.st_ino == this_inode) {
             strncpy(namebuf, dirent_ptr->d_name, buflen);
             closedir(dir_ptr);
             namebuf[buflen-1] = '\0';
