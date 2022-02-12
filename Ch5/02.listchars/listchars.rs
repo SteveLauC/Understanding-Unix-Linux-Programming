@@ -14,7 +14,7 @@ fn main() {
             if c == b'Q' {
                 std::process::exit(0);
             }else{
-                println!("char {:3} is {} code {}", i, c, c);
+                println!("char {:3} is {} code {}", i, char::from(c), c);
             }
         }
     });
