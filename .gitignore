@@ -1,0 +1,6 @@
+# untrack all the lock file
+**/Cargo.lock
+
+# and target directory
+**/target
+
