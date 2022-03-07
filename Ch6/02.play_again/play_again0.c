@@ -7,7 +7,6 @@
 */
 
 #include <stdio.h>
-#include <termio.h>
 
 #define QUESTION "Do you want another transaction"
 
