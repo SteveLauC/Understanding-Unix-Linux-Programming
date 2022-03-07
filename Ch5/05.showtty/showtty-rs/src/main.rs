@@ -1,101 +1,96 @@
-use libc::{self, cfgetospeed, speed_t, tcgetattr, termios};
 use std::process;
+use termios::os::linux::{
+    speed_t, tcflag_t, B1200, B1800, B2400, B300, B38400, B4800, B600, B9600, BRKINT, ECHO, ECHOE,
+    ICANON, ICRNL, IGNBRK, IGNCR, IGNPAR, INLCR, INPCK, ISIG, IXOFF, IXON, PARMRK, VERASE, VKILL,
+};
+use termios::{cfgetospeed, Termios};
 
-struct FlagInfo<'a>{
-    fl_value: libc::tcflag_t,
+struct FlagInfo<'a> {
+    fl_value: tcflag_t,
     fl_name: &'a str,
 }
 impl<'a> FlagInfo<'a> {
-    const fn new(value: libc::tcflag_t, name: &'a str)->Self {
-        Self{
+    const fn new(value: tcflag_t, name: &'a str) -> Self {
+        Self {
             fl_value: value,
             fl_name: name,
         }
     }
 }
 
-const INPUT_FLAGS: [FlagInfo;10] = [
-    FlagInfo::new(libc::IGNBRK, "Ignore break condition"),
-    FlagInfo::new(libc::BRKINT, "Signal interrupt on break"),
-    FlagInfo::new(libc::IGNPAR, "Ignore chars with parity errors"),
-    FlagInfo::new(libc::PARMRK, "Mark parity errors"),
-    FlagInfo::new(libc::INPCK, "Enable input parity check"),
-    FlagInfo::new(libc::INLCR, "Map NL to CR on input"),
-    FlagInfo::new(libc::IGNCR, "Ignore CR"),
-    FlagInfo::new(libc::ICRNL, "Map CR to NL on input"),
-    FlagInfo::new(libc::IXON, "Enable start/stop output contrl"),
-    FlagInfo::new(libc::IXOFF, "Ebale start/stop input control"),
-]; 
+const INPUT_FLAGS: [FlagInfo; 10] = [
+    FlagInfo::new(IGNBRK, "Ignore break condition"),
+    FlagInfo::new(BRKINT, "Signal interrupt on break"),
+    FlagInfo::new(IGNPAR, "Ignore chars with parity errors"),
+    FlagInfo::new(PARMRK, "Mark parity errors"),
+    FlagInfo::new(INPCK, "Enable input parity check"),
+    FlagInfo::new(INLCR, "Map NL to CR on input"),
+    FlagInfo::new(IGNCR, "Ignore CR"),
+    FlagInfo::new(ICRNL, "Map CR to NL on input"),
+    FlagInfo::new(IXON, "Enable start/stop output contrl"),
+    FlagInfo::new(IXOFF, "Ebale start/stop input control"),
+];
 
-const LOCAL_FLAGS: [FlagInfo;4] = [
-    FlagInfo::new(libc::ISIG, "Enable signals"),
-    FlagInfo::new(libc::ICANON, "Cannoical input(erase and kill)"),
-    FlagInfo::new(libc::ECHO, "Enable echo"),
-    FlagInfo::new(libc::ECHOE, "Echo ERASE as BS-SPACE-BS"),
+const LOCAL_FLAGS: [FlagInfo; 4] = [
+    FlagInfo::new(ISIG, "Enable signals"),
+    FlagInfo::new(ICANON, "Cannoical input(erase and kill)"),
+    FlagInfo::new(ECHO, "Enable echo"),
+    FlagInfo::new(ECHOE, "Echo ERASE as BS-SPACE-BS"),
 ];
 
 fn show_baud(thespeed: speed_t) {
     match thespeed {
-        libc::B300 => println!("300"),
-        libc::B600 => println!("600"),
-        libc::B1200 => println!("1200"),
-        libc::B1800 => println!("1800"),
-        libc::B2400 => println!("2400"),
-        libc::B4800 => println!("4800"),
-        libc::B9600 => println!("9600"),
-        libc::B38400 => println!("38400"),
+        B300 => println!("300"),
+        B600 => println!("600"),
+        B1200 => println!("1200"),
+        B1800 => println!("1800"),
+        B2400 => println!("2400"),
+        B4800 => println!("4800"),
+        B9600 => println!("9600"),
+        B38400 => println!("38400"),
         _ => println!("fast"),
     }
 }
 
-fn show_flagset(thvalue: libc::tcflag_t, thebitnames: &[FlagInfo]) {
+fn show_flagset(thvalue: tcflag_t, thebitnames: &[FlagInfo]) {
     for flag in thebitnames {
         print!("{} is ", flag.fl_name);
         if thvalue & flag.fl_value != 0 {
             println!("ON");
-        }else{
+        } else {
             println!("OFF");
         }
     }
 }
 
-fn show_some_flags(ttyp: &termios) {
+fn show_some_flags(ttyp: &Termios) {
     show_flagset(ttyp.c_iflag, &INPUT_FLAGS);
     show_flagset(ttyp.c_lflag, &LOCAL_FLAGS);
-
 }
 fn main() {
-    let mut ttyinfo: termios = termios {
-        c_iflag: 0,
-        c_oflag: 0,
-        c_cflag: 0,
-        c_lflag: 0,
-        c_line: 0,
-        c_cc: [0; 32],
-        c_ispeed: 0,
-        c_ospeed: 0,
+    let ttyinfo: Termios = match Termios::from_fd(0) {
+        Ok(s) => s,
+        Err(msg) => {
+            eprintln!("Cannot get params about stdin: {}", msg);
+            process::exit(1);
+        }
     };
 
-    if (unsafe { tcgetattr(0, &mut ttyinfo as *mut termios) } == -1) {
-        eprintln!("Cannot get params about stdin");
-        process::exit(1);
-    }
-
     println!("OUTPUT BAUD RATE:");
-    show_baud(unsafe { cfgetospeed(&ttyinfo as *const termios) });
+    show_baud(cfgetospeed(&ttyinfo));
     print!("\n");
 
     println!("CONTROL CHARACTER:");
     println!(
         "The erase character is ascii {}, Ctrl - {}",
-        ttyinfo.c_cc[libc::VERASE],
-        char::from(ttyinfo.c_cc[libc::VERASE] + 'A' as u8 - 1)
+        ttyinfo.c_cc[VERASE],
+        char::from(ttyinfo.c_cc[VERASE] + 'A' as u8 - 1)
     );
 
     println!(
         "The line kill character is ascii {}, Ctrl - {}",
-        ttyinfo.c_cc[libc::VKILL],
-        char::from(ttyinfo.c_cc[libc::VKILL] + 'A' as u8 - 1)
+        ttyinfo.c_cc[VKILL],
+        char::from(ttyinfo.c_cc[VKILL] + 'A' as u8 - 1)
     );
     print!("\n");
 
