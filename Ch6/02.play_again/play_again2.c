@@ -19,7 +19,7 @@
   returns: 0=>yes, 1=>no
 */
 int get_response(char * question) {
-    printf("%s (y/n)", QUESTION);
+    printf("%s (y/n)", question);
     while(1) {
         switch (getchar()) {
             case 'y':
