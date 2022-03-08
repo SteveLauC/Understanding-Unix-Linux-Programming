@@ -1,6 +1,6 @@
 
 /*
-  play_again2.c
+  play_again3.c
   purpose: ask if user wants another transaction
   method: set tty into char-by-char mode, read char, return result
   returns: 0=>yes, 1=>no
