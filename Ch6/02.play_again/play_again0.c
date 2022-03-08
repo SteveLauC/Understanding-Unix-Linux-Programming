@@ -1,6 +1,6 @@
 /*
   play_again0.c
-  purpose: ask if user want another transaction
+  purpose: ask if user wants another transaction
   method: ask a question, wait for yes/no answer
   returns: 0=>yes, 1=>no
   better: eliminate need to press return

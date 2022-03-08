@@ -1,6 +1,6 @@
 /*
   play_again1.c
-  purpose: ask if user want another transaction
+  purpose: ask if user wants another transaction
   method: set tty into char-by-char mode, read char, return result
   returns: 0=>yes, 1=>no
   better: do not echo inappropriate input
