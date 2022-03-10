@@ -31,19 +31,23 @@ fn set_cr_noecho_mode() {
 
 // put file descriptor 0 into non-blocking mode
 fn set_non_blocking_mode() {
-    let mut terflags: c_int = unsafe { fcntl(0, F_GETFL) };
-    terflags |= O_NONBLOCK;
     unsafe {
-        fcntl(0, F_SETFL, terflags);
+        fcntl(0, F_SETFL, fcntl(0, F_GETFL) | O_NONBLOCK);
     }
 }
 
+/*
+   encounter EOF => return 0
+   encounter YyNn => retrun Y or n as u8
+   does not receive the above value in TRIES*SLEEPTIME => return 0
+*/
 fn get_ok_chars() -> u8 {
     let mut n: u8 = 0;
     for i in stdin().bytes() {
         if i.is_err() {
             return n;
         }
+        n = i.unwrap();
         if n == 'Y' as u32 as u8 || n == 'y' as u32 as u8 {
             n = 'Y' as u32 as u8;
         }
@@ -54,13 +58,15 @@ fn get_ok_chars() -> u8 {
     n
 }
 
-fn get_response() -> u8 {
+fn get_response(mut max_tries: i32) -> u8 {
     print!("Do you want another transaction: (y/n)");
     stdout().flush().unwrap();
 
-    for _ in 0..TRIES {
+    loop {
         sleep(Duration::from_secs(SLEEPTIME));
         let input: u8 = get_ok_chars();
+        max_tries -= 1;
+        println!("one try");
 
         if input == 'Y' as u32 as u8 {
             return 0;
@@ -69,19 +75,17 @@ fn get_response() -> u8 {
             return 1;
         }
 
-        if input == 0 {
+        if max_tries == 0 {
             return 2;
         }
     }
-
-    unreachable!()
 }
 fn main() {
     let orig_mode: Termios = Termios::from_fd(0).expect("Can not fetch original confuguration");
     let orig_flags: c_int = unsafe { fcntl(0, F_GETFL) };
     set_cr_noecho_mode();
     set_non_blocking_mode();
-    let response: u8 = get_response();
+    let response: u8 = get_response(TRIES);
     tcsetattr(0, TCSANOW, &orig_mode).expect("Can not send the original mode back");
     unsafe { fcntl(0, F_SETFL, orig_flags) };
     process::exit(response as i32);

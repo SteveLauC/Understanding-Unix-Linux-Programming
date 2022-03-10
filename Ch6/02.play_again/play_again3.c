@@ -27,7 +27,7 @@
 int get_ok_char() {
     int c;
     // in non-blocking mode, getchar() will return EOF if there is no input for it.
-    while ( (c = getchar()) != EOF && strchr("ynYN", c)) {
+    while ( (c = getchar()) != EOF && strchr("ynYN", c) == NULL) {
         continue;
     }
     // looks like our assertion is useless here, but anyway:)
