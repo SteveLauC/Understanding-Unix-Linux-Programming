@@ -1,10 +1,9 @@
 
 /*
-  play_again3.c
+  play_again4.c
   purpose: ask if user wants another transaction
-  method: set tty into char-by-char mode, read char, return result
+  method: set tty into char-by-char, no-echo, and non-blocking mode
   returns: 0=>yes, 1=>no, 2=>timeout
-  better: timeout if user walks away
 */
 
 #include <stdio.h>
@@ -15,6 +14,7 @@
 #include <assert.h>
 #include <fcntl.h>
 #include <termio.h>
+#include <signal.h>
 
 #define TRIES 3
 #define SLEEPTIME 2
@@ -113,11 +113,22 @@ void tty_mode(int how) {
     }
 }
 
+/*
+    purpose: called if SIGINT is detected
+    action: reset tty and scram
+*/
+void ctrlc_handler(int signum) {
+    tty_mode(1);
+    exit(130);
+}
+
 int main() {
     int response = 0;
     tty_mode(0);
     set_cr_noecho_mode();
     set_non_blocking_mode();
+    signal(SIGINT, ctrlc_handler);
+    signal(SIGQUIT, SIG_IGN);
     response = get_response(QUESTION, TRIES);
     tty_mode(1);
     return response;
