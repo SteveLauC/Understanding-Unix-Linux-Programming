@@ -24,7 +24,7 @@ int main() {
         refresh();
         sleep(1);
         move(i, i+1);
-        addstr("                                                     ");
+        addstr("           ");
     }
     endwin();
     return 0;

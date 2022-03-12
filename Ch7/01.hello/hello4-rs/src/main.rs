@@ -9,7 +9,7 @@ fn main() {
         initscr();
         clear();
         let hello: CString = CString::new("Hello world").expect("can not create c compatible string");
-        let empty: CString = CString::new("                   ").expect("can not create c compatible string");
+        let blank: CString = CString::new("           ").expect("can not create c compatible string");
 
         for i in 0..LINES {
             move_(i, i+1);
@@ -23,7 +23,7 @@ fn main() {
             sleep(Duration::from_secs(1));
             refresh();
             move_(i, i+1);
-            addstr(empty.as_ptr()) ;
+            addstr(blank.as_ptr()) ;
         }
 
         endwin();
