@@ -1,0 +1,16 @@
+use nix::sys::signal::{signal, SIGALRM};
+use nix::unistd::alarm::set;
+use nix::unistd::pause;
+use libc::c_int;
+
+extern "C" wakeup(signum: c_int) {
+    println!("Alarm recieved from kernel");
+}
+
+
+fn main() {
+    unsafe{signal(SIGALRM, wakeup).expect("can not get previous SIGALRM handler");}
+    println!("About to sleep for 4 seconds");
+    set(4).expect("can not get the the leftover of the proviously set alarm");
+    pause()  
+}
