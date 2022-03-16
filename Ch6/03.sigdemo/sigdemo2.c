@@ -1,5 +1,5 @@
 /*
- * sigdemo1.c
+ * sigdemo2.c
  * shows how to ignore a signal
  * press Ctrl-\ to kill this process
 */
