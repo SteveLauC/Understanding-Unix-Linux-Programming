@@ -1,6 +1,6 @@
 /*
     sleep1.c
-    purpose: show how sleep() works
+    purpose: show how sleep() works, implement sleep using alarm.
     usage: sleep1
     outline: sets handler, sets alarm, pause, then returns
 */
