@@ -1,7 +1,7 @@
 /*
-    sigdemo1.c
-    shows how to ignore a signal
-    press Ctrl-\ to kill this process
+ * sigdemo1.c
+ * shows how to ignore a signal
+ * press Ctrl-\ to kill this process
 */
 
 #include <stdio.h>
