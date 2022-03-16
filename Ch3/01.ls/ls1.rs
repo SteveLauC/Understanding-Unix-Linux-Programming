@@ -1,5 +1,3 @@
-// NOTE: the following code doesn't list  `.` and `..`
-
 use std::fs::read_dir;
 use std::path::Path;
 use std::env::{args,Args};
