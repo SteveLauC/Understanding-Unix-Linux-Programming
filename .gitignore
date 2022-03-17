@@ -4,3 +4,5 @@
 # and target directory
 **/target
 
+# clion config file
+**/.idea
