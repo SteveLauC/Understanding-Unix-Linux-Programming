@@ -2,10 +2,18 @@
     sigdemo3.c
     purpose: show answers to signal questions
 
-    question1: does the handler stay in effect after a signal arrives
-    question2: what if a signalX arrives while handling signalX?
+    question1: does the handler stay in effect after a signal arrives 
+    answer1: yes
+
+    question2: what if a signalX arrives while handling signalX? 
+    answer2: second signal is blocked, and they will be handled in order
+
     question3: what if a signalX arrives while handling signalY?
+    anser3: system will handle signalY while it is hanling signalX,
+    as if it were a recurisive function call(i.e. call signalY handler in signalX handler) 
+
     question4: wht happens to read() when a signal arrives?
+    answer4: read function will take effect when signal handling is done
 */
 
 #include <stdio.h>
