@@ -3,7 +3,6 @@
     purpose: animation with user controled speed and direction
     note: the handler does the animation, the main program reads the input
     compile: gcc bounce1d.c set_ticker.c -l curses -o bounce1d
-    weird bug: when dir is -1 and MESSAGE is going back, there will be some redundant o in its tail
 */
 
 #include <stdio.h>
@@ -30,6 +29,7 @@ void move_msg(int signum) {
     addstr(BLANK);
     // fprintf(stderr, "Write %ld spaces to %d\n", strlen(BLANK), col);
     col += dir;
+    move(row, col);
     addstr(MESSAGE);
     // fprintf(stderr, "Write %d chars to %d\n", MESSAGE_LEN, col);
     refresh();
