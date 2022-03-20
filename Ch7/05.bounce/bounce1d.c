@@ -29,7 +29,7 @@ void move_msg(int signum) {
     move(row, col);
     addstr(BLANK);
     // fprintf(stderr, "Write %ld spaces to %d\n", strlen(BLANK), col);
-    col += 2*dir;
+    col += dir;
     addstr(MESSAGE);
     // fprintf(stderr, "Write %d chars to %d\n", MESSAGE_LEN, col);
     refresh();
