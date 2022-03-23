@@ -64,7 +64,7 @@ void set_up() {
     clear();
 
     signal(SIGINT, SIG_IGN);
-    mvaddch(the_ball.x_pos, the_ball.y_pos, (chtype)the_ball.symbol);
+    mvaddch(the_ball.x_pos, the_ball.y_pos, the_ball.symbol);
     refresh();
 
     signal(SIGALRM, ball_move);
@@ -97,8 +97,8 @@ void ball_move(int signum) {
     }
 
     if (moved) {
-        mvaddch(y_cur, x_cur, (chtype)BLANK);
-        mvaddch(y_cur, x_cur, (chtype)BLANK);
+        mvaddch(y_cur, x_cur, BLANK);
+        mvaddch(y_cur, x_cur, BLANK);
         mvaddch(the_ball.y_pos, the_ball.x_pos, the_ball.symbol);
         bounce_or_loose(&the_ball);
         move(LINES-1, COLS-1);

@@ -3,7 +3,7 @@
     some settings for the game
 */
 
-#define BLANK ' '
+#define BLANK ' ' 
 #define DFL_SYMBOL 'O'
 
 // border
