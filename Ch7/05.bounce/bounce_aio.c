@@ -81,7 +81,7 @@ void on_input(int signum) {
         perror("reading failed");
     } else {
         // get number of chars read 
-        if (aio_read(&kbcbuf) == 0) {
+        if (aio_return(&kbcbuf) == 1) {
             // printf("debug: get a char\n");
             c = *cp;
 
