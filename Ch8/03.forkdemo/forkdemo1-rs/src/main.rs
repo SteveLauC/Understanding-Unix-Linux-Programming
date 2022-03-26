@@ -6,10 +6,11 @@ fn main() {
 
     match unsafe { fork() } {
         Ok(ForkResult::Parent { child }) => {
+            // we are in the parent process
             println!("After: my pid is {}, fork() said {}", process::id(), child);
         }
-
         Ok(ForkResult::Child) => {
+            // we are in the child process
             println!("After my pid is {}, fork() said {}", process::id(), 0);
         }
         Err(msg) => {
