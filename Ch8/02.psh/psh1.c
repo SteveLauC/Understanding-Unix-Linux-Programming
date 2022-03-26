@@ -34,6 +34,8 @@ int main() {
             if (num_args > 0) {
                 arg_list[num_args] = NULL;
                 execute(arg_list);
+                
+                // reset num_args so that we "can" continuously run commands
                 num_args = 0;
             }
         }

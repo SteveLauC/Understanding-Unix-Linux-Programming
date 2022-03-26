@@ -22,6 +22,9 @@ fn main() {
 
             // execute
             execute(&mut cmd);
+
+            // reset num_args
+            num_args = 0;
         } else {
             num_args += 1;
             let mut clone: String = buf.clone();
