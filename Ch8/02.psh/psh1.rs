@@ -15,16 +15,19 @@ fn main() {
 		io::stdout().flush().unwrap();
 
         if io::stdin().read_line(&mut buf).is_err() || buf.starts_with('\n') {
-            // prepare the command
-            let mut list: Iter<String> = arg_list.iter();
-            let mut cmd: Command = Command::new(list.next().unwrap());
-            cmd.args(list);
 
-            // execute
-            execute(&mut cmd);
+            if num_args > 0{
+                // prepare the command
+                let mut list: Iter<String> = arg_list.iter();
+                let mut cmd: Command = Command::new(list.next().unwrap());
+                cmd.args(list);
 
-            // reset num_args
-            num_args = 0;
+                // execute
+                execute(&mut cmd);
+
+                // reset num_args
+                num_args = 0;
+            }
         } else {
             num_args += 1;
             let mut clone: String = buf.clone();

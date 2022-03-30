@@ -1,17 +1,20 @@
 /*
-    prompting shell version 1
-    prompts for the command and its arguments
-    builds the argument vector for the call to execvp
-    Uses execvp(), and never returns.
+    prompting shell version2
+    Solve the one-shot problem of version 1
+        Uses execvp(), but fork() first so that the shell waits around to perform another command
+
+    New problem: shell catches signals, run `yes` and press Ctrl-C
+    `yes` and `psh2` are both interrupted:(
 */
 
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <sys/wait.h>
 
-#define MAXARGS 20  /* cmd line args*/
-#define ARGLEN 100  /* token length*/
+#define MAXARGS 20          // cmdline args
+#define ARGLEN 100          // token length
 
 char * make_string(char * buf);
 int execute(char * arg_list[]);
@@ -45,22 +48,34 @@ int main() {
 }
 
 /*
-    use execvp to execute the cmd
+    use fork and execvp and wait to execute the cmd
 */
 int execute(char * arglist[]) {
-    if (-1 == execvp(arglist[0], arglist) ) {
+    pid_t pid = fork();
+    int child_status = 0;
 
-        const char * p = NULL;
-        for (int i = 0; i < MAXARGS+1; i++) {
-            p = arglist[i];
-            if (p != NULL) {
-                fprintf(stderr, "debug: arg[%d]: %s\n", i, p);
+    switch (pid) {
+        case -1:
+            perror("fork");
+            exit(EXIT_FAILURE);
+        case 0:
+            if (-1 == execvp(arglist[0], arglist) ) {
+                const char * p = NULL;
+                for (int i = 0; i < MAXARGS+1; i++) {
+                    p = arglist[i];
+                    if (p != NULL) {
+                        fprintf(stderr, "debug: arg[%d]: %s\n", i, p);
+                    }
+                }
+
+                perror("execvp failed");
+                exit(EXIT_FAILURE);
             }
-        }
-
-        perror("execvp failed");
-        exit(EXIT_FAILURE);
-    }
+            break;
+        default:
+            while(wait(&child_status) != pid) {};
+            printf("child exited with status: %d %d\n", child_status>>8, child_status&0xff);
+    };
 }
 
 /*
