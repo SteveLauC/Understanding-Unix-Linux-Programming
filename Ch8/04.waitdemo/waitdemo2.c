@@ -1,6 +1,6 @@
 /*
-    waitdemo1.c
-    shows how parent pauses until child finishes
+    waitdemo2.c
+    shows how parent get child status
 */
 #include <stdio.h>
 #include <unistd.h>
@@ -8,7 +8,7 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 
-#define DELAY 2
+#define DELAY 10 
 
 void child_code(int delay);
 void parent_code(pid_t child_pid);
@@ -41,11 +41,16 @@ void child_code(int delay) {
 }
 
 void parent_code(int child_pid) {
-    // will suspend the parent until child's termination
-    int status = 0;
-    int wait_rv = wait(&status);
-    printf("done waiting for %d. wait() returned: %d\n", child_pid, wait_rv);
+    int child_status = 0;
+    int high_8 = 0;
+    int low_7 = 0;
+    int bit_7 = 0;
+    int wait_rv = wait(&child_status);
 
-    int exit_code = WEXITSTATUS(status);
-    printf("exit code: %d", exit_code);
+    printf("done waiting for %d. wait() returned: %d\n", child_pid, wait_rv);
+    high_8 = child_status >> 8;
+    low_7 = child_status & 0x7f;
+    bit_7 = (child_status & 0x80) != 0;
+
+    printf("status: exit=%d, sig=%d, core=%d\n", high_8, low_7, bit_7);
 }

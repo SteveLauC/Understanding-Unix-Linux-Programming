@@ -1,14 +1,12 @@
-use nix::libc::pid_t;
-use nix::sys::wait::{wait, WaitStatus};
+use nix::libc::{pid_t, wait};
 use nix::unistd::{fork, ForkResult};
 use std::process;
 use std::thread;
 use std::time::Duration;
 
-const DELAY: u64 = 2;
+const DELAY: u64 = 10;
 
 fn main() {
-    process::exit(20);
     println!("before: mypid is {}\n", process::id());
 
     match unsafe { fork() } {
@@ -30,13 +28,16 @@ fn child_code(delay: u64) {
 }
 
 fn parent_code(child_pid: pid_t) {
-    // let (wait_rv, _): (pid_t, _) = wait().expect("can not wait for the child");
-    if let WaitStatus::Exited(wait_rv, exit_code) = wait().expect("can not wait for the child") {
-        println!(
-            "done waiting for {}. wait() returned: {}",
-            child_pid, wait_rv
-        );
+    // for the reason that nix has done some abstraction based on the original syscall
+    // we use libc instead here.
 
-        println!("exit_code: {}", exit_code);
-    }
+    let mut child_status = 0;
+    let wait_rv: pid_t = unsafe{wait(&mut child_status)};
+    
+    println!("done waiting for {}. Wait returned: {}\n", child_pid, wait_rv);
+    let high_8: i32 = child_status >> 8;
+    let low_7: i32 = child_status & 0x7f;
+    let bit_7: i32 = (child_status & 0x80) >> 7;
+
+    println!("status: exit = {}, sig = {}, core = {}", high_8, low_7, bit_7);
 }
