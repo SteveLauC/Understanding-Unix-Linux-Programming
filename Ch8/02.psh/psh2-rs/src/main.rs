@@ -1,3 +1,7 @@
+/*
+    known bug: when given a invalid command, the shell won't complain and just skip it.
+    This is possibly caused by `cmd.exec()` from rust standard.
+*/
 use std::io::{self, Write};
 use std::os::unix::prelude::CommandExt;
 use std::process::{exit, Command};
