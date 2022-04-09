@@ -8,6 +8,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <assert.h>
+#include <unistd.h>
 
 /*
     purpose: run a program passing its arguments
@@ -18,8 +19,6 @@ int execute(char *argv[]) {
     pid_t pid;
     int child_info = -1;
 
-    // guarantee we hava at least on arguments
-    assert(sizeof(argv)/sizeof(char *) >= 1);
 
     if (NULL == argv[0]) {
         return 0;
