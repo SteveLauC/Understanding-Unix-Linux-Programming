@@ -3,8 +3,8 @@
 
 #include <stddef.h>
 
-#define YES 1
-#define NO 0
+/* #define YES 1 */
+/* #define NO 0 */
 
 char * next_cmd(char * , FILE *);
 char *newstr(char *, int);
