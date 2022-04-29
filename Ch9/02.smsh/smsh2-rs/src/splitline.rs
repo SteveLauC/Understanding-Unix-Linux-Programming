@@ -2,6 +2,7 @@ use std::io::{stdout, Stdin, Write};
 
 // hardcode fp to stdin
 pub fn next_cmd(prompt: &str, fp: Stdin) -> Option<String> {
+    // print the command prompt 
     print!("{}", prompt);
     stdout().flush().expect("can not flush stdout");
 

@@ -1,5 +1,5 @@
-use super::controlflow::{do_control_command, is_control_command, ok_to_execute};
-use super::execute::execute;
+use crate::controlflow::{do_control_command, is_control_command, ok_to_execute};
+use crate::execute::execute;
 use std::process::Command;
 
 pub enum ProcessRes {

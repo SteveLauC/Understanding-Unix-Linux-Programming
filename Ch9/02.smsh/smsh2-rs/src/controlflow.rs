@@ -1,7 +1,9 @@
-use super::process::process;
-use super::process::ProcessRes;
+use crate::process::process;
+use crate::process::ProcessRes;
 use std::process::exit;
 
+
+/// type to represent states
 #[derive(PartialEq)]
 enum States {
     Nentral,
@@ -15,9 +17,11 @@ enum Result {
     Failure,
 }
 
+/// global variables to represents current state and result
 static mut IF_STATE: States = States::Nentral;
 static mut IF_RESULT: Result = Result::Success;
 
+/// purpose: to identify the control command
 pub fn is_control_command(first_cmd: &str) -> bool {
     first_cmd.starts_with("if") || first_cmd.starts_with("then") || first_cmd.starts_with("fi")
 }

@@ -1,4 +1,6 @@
-use super::process::ProcessRes;
+//! execute.rs: execute the command
+
+use crate::process::ProcessRes;
 use std::os::unix::process::CommandExt;
 use std::process::{exit, Command};
 
@@ -6,6 +8,12 @@ use nix::sys::signal::{signal, SigHandler, SIGINT, SIGQUIT};
 use nix::sys::wait::wait;
 use nix::unistd::{fork, ForkResult};
 
+/// purpose: execute the command
+/// 
+/// arguments:
+///     * `cmd`: command to be executed
+///   
+/// return: command executation result
 pub fn execute(mut cmd: Command) -> ProcessRes {
     match unsafe { fork() } {
         Ok(ForkResult::Child) => {
@@ -28,7 +36,7 @@ pub fn execute(mut cmd: Command) -> ProcessRes {
     eprintln!(
         "This is a bug of my rust version shell(due to the `exec()` function) ,\
     invalid command will reach unreachable part of code so that \
-    the program will panic for the use of `unreachable!()`"
+    the program/child-process will panic for the use of `unreachable!()`"
     );
     unreachable!()
 }
