@@ -1,8 +1,20 @@
+//! splitline.rs: command reading and spliting
+
 use std::io::{stdout, Stdin, Write};
 
-// hardcode fp to stdin
+/// purpose: read a line from stdin
+///
+/// action: prompt user and read a line from stdin.
+///
+/// arguments:
+///     * `prompt`: user prompt
+///     * `fp`: file ptr, hardcode to Stdin here
+///
+/// return:
+///     If read successfully, return Some(Command)
+///     Otherwise, retrun None
 pub fn next_cmd(prompt: &str, fp: Stdin) -> Option<String> {
-    // print the command prompt 
+    // print the command prompt
     print!("{}", prompt);
     stdout().flush().expect("can not flush stdout");
 
@@ -14,8 +26,14 @@ pub fn next_cmd(prompt: &str, fp: Stdin) -> Option<String> {
     }
 }
 
-pub fn splitline(line: String) -> Vec<String> {
-    line.split_ascii_whitespace()
-        .map(|str| str.to_owned())
-        .collect()
+/// purpose: tokenize the command line using spaces
+///
+/// action: split the line into words using space
+///
+/// arguments:
+///     * `line`: command line
+///    
+/// return: a list of words
+pub fn splitline(line: &str) -> Vec<&str> {
+    line.split_ascii_whitespace().collect()
 }

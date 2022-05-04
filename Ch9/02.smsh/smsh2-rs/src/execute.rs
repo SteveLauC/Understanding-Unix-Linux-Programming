@@ -1,4 +1,4 @@
-//! execute.rs: execute the command
+//! execute.rs: executes the command
 
 use crate::process::ProcessRes;
 use std::os::unix::process::CommandExt;
@@ -9,7 +9,7 @@ use nix::sys::wait::wait;
 use nix::unistd::{fork, ForkResult};
 
 /// purpose: execute the command
-/// 
+///
 /// arguments:
 ///     * `cmd`: command to be executed
 ///   
