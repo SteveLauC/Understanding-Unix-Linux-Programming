@@ -1,9 +1,9 @@
 //! builtin.rs: contains the switch and the functions for the built-in commands
 //!
 //! Currently, the supported built-in commands are as follows:
-//!      1. set: print all the shell variables
-//!      2. var=value: initialize a shell variable
-//!      3. export: make an existed global
+//!      1. `set`: print all the shell variables
+//!      2. `var=value`: initialize a shell variable
+//!      3. `export var-name`: make an existed variable global
 
 use crate::process::ProcessRes;
 use crate::VarTable;
