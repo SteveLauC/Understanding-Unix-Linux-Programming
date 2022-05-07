@@ -1,6 +1,7 @@
 //! controlflow.rs: control the flow of command execution
 
 use crate::process::{process, ProcessRes};
+use crate::varlib::VarTable;
 
 /// type to represent states
 #[derive(PartialEq)]
@@ -44,17 +45,17 @@ pub fn is_control_command(first_cmd: &str) -> bool {
 ///         If it is a `fi` clause and the state is `ThenBlock`, update the state to `Nentral`
 ///         Else, report syntax error
 ///         
-/// arguments: 
+/// arguments:
 ///     * `args`: a command words list constructed by `crate::splitline::splitline`
 ///    
 /// return: control command processing result
-pub fn do_control_command(args: Vec<&str>) -> ProcessRes {
+pub fn do_control_command(args: Vec<&str>, vt: &mut VarTable) -> ProcessRes {
     match args[0] {
         "if" => unsafe {
             if IF_STATE != States::Nentral {
                 syn_err("if unexpected")
             } else {
-                match process(args[1..].to_vec()) {
+                match process(args[1..].to_vec(), vt) {
                     ProcessRes::Success => {
                         IF_RESULT = Result::Success;
                     }
@@ -88,9 +89,8 @@ pub fn do_control_command(args: Vec<&str>) -> ProcessRes {
     }
 }
 
-
 /// purpose: to check if it is able to execute the normal command
-/// 
+///
 /// action: there are two situations where we can execute the command
 ///         1. in `Nentral` state
 ///         2. in `ThenBlock` state and the executing result of `if` clause is success
@@ -99,9 +99,7 @@ pub fn do_control_command(args: Vec<&str>) -> ProcessRes {
 pub fn ok_to_execute() -> bool {
     unsafe {
         match IF_STATE {
-            States::Nentral => {
-                true
-            }
+            States::Nentral => true,
             States::ThenBlock => match IF_RESULT {
                 Result::Success => true,
                 Result::Failure => false,
@@ -114,11 +112,10 @@ pub fn ok_to_execute() -> bool {
     }
 }
 
-
 /// purpose: dedicated error handling function
-/// 
+///
 /// action: print the error info to stderr and set the state to `Nentral`, then return `Process::Failure`
-/// 
+///
 /// arguments:
 ///     * `msg`: error info
 ///

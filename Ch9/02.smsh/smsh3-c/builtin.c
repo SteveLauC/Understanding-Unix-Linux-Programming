@@ -90,7 +90,7 @@ bool is_built_in_command(char * cmd) {
  * arguments: 
  *  * `args`: command words list
  *  
- * return: 
+ * return: 0 on success, non-zero on failure
 */
 int builtin_command(char ** args) {
     if (strcmp(args[0], "set") == 0) {

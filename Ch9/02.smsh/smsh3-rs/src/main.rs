@@ -1,10 +1,13 @@
+mod builtin;
 mod execute;
 mod ifclause;
 mod process;
 mod splitline;
+mod varlib;
 
 use process::process;
 use splitline::{next_cmd, splitline};
+use varlib::VarTable;
 
 use nix::sys::signal::{signal, SigHandler, SIGINT, SIGQUIT};
 use std::io::stdin;
@@ -21,8 +24,9 @@ fn set_up() {
 
 fn main() {
     set_up();
+    let mut vt: VarTable = VarTable::new();
 
     while let Some(cmd_line) = next_cmd("> ", stdin()) {
-        process(splitline(&cmd_line));
+        process(splitline(&cmd_line), &mut vt);
     }
 }
