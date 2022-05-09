@@ -29,12 +29,7 @@ impl VarTable {
     /// return: if `name` exists in the table, return mutable reference to that item.
     ///         Otherwise, return None
     fn find_item<'a, 'b>(&'a mut self, name: &'b str) -> Option<&'a mut Var> {
-        for item in self.table.iter_mut() {
-            if item.name == name {
-                return Some(item);
-            }
-        }
-        None
+        self.table.iter_mut().find(|item| item.name == name)
     }
 
     /// purpose: shell variable table initialization
@@ -87,13 +82,7 @@ impl VarTable {
     ///     
     /// return: if found, return Some(value); otherwise, return None
     pub fn lookup(&self, name: &str) -> Option<String> {
-        for item in self.table.iter() {
-            if item.name == name {
-                return Some(item.value.clone());
-            }
-        }
-
-        None
+        self.table.iter().find(|item| item.name==name).map(|var|var.name.clone())
     }
 
     /// purpose: store or update a variable
