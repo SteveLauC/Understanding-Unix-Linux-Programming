@@ -5,7 +5,7 @@
 // world
 // After typing `world`, you wanna send it and quit the program
 //
-// In the C version of write0, 2 EOFs is adequate.
+// In the C version of write0, 2 EOFs are adequate.
 // Nevertheless, you need 3 EOFs here.
 //
 // idk the reason, `fgets` and `read_until` are both buffered
