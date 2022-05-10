@@ -1,13 +1,12 @@
 // Here is a little bug I cannot figure out:(
 //
-// let's assume the following test condition:
+// let's assume the following test scene:
 // $ .write0 /dev/pts/4
 // world
-// You typed `world` and wanted to quit
+// After typing `world`, you wanna send it and quit the program
 //
-// In the C version of write0, 2 times of EOF is sufficient.
-// Nevertheless, you need 3 times of it here.
-// Seemingly, in Rust version of write0, 2 times of EOF to send `world` and the last one for the exit 
+// In the C version of write0, 2 EOFs is adequate.
+// Nevertheless, you need 3 EOFs here.
 //
 // idk the reason, `fgets` and `read_until` are both buffered
 // If you know this, PR welcome.
