@@ -19,4 +19,5 @@ int main() {
     
     fgets(buf, 100, stdin);
     printf("%s\n", buf);
+    return 0;
 }
