@@ -1,10 +1,10 @@
 use nix::unistd::{close, dup2, fork, pipe, read, ForkResult};
+use nix::sys::wait::wait;
 use std::fs::File;
 use std::io::{stdin, stdout, Write};
 use std::os::unix::io::{FromRawFd, RawFd};
 use std::os::unix::prelude::CommandExt;
-use std::process::exit;
-use std::process::Command;
+use std::process::{exit, Command};
 use std::str;
 
 fn main() {
@@ -23,6 +23,7 @@ fn main() {
                 close(to_dc_read_end).unwrap();
                 close(from_dc_write_end).unwrap();
                 be_bc(to_dc_write_end, from_dc_read_end);
+                wait().unwrap();
             }
         },
     }
