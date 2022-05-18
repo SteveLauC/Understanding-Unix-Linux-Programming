@@ -1,5 +1,10 @@
 /*
   C's `FILE` is buffered so we use `BufReader` here
+
+  maybe a bug:
+  `FILE *` constructed by `popen()` have to be closed via `pclose()`, but here in rust
+  the read end of pipe is converted to a `BufReader`. I am not sure if this will make
+  child-process a zombie process 
 */
 
 use libc::{fileno, popen, FILE};
