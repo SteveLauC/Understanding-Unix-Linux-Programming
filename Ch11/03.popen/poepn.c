@@ -30,7 +30,7 @@ FILE* my_popen(const char* command, char* type)
     if (pipe(pipe_fd) == -1)
     {
         perror("Can not pipe");
-        exit(1);
+        return NULL;
     }
 
     // fork a process
@@ -38,7 +38,7 @@ FILE* my_popen(const char* command, char* type)
     if (pid == -1)
     {
         perror("Can not fork");
-        exit(1);
+        return NULL;
     }
     else if (pid == 0)
     {
@@ -58,7 +58,7 @@ FILE* my_popen(const char* command, char* type)
         else
         {
             fprintf(stderr, "invalid type argument");
-            exit(1);
+            return NULL;
         }
         // execute `command`
         execl("/usr/bin/bash", "sh", "-c", command, NULL);
@@ -79,7 +79,7 @@ FILE* my_popen(const char* command, char* type)
         else
         {
             fprintf(stderr, "invalid type argument");
-            exit(1);
+            return NULL;
         }
     }
 }
