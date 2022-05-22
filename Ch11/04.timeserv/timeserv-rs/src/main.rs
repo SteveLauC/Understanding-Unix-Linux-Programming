@@ -17,7 +17,8 @@ fn main() {
             .unwrap()
             .as_secs();
 
-        client.write(b"Wow! got a call\nThe time here is ").unwrap();
+        println!("Wow! got a call");
+        client.write(b"The time here is ").unwrap();
         client.write(show_time(now).as_bytes()).unwrap();
     }
 }
