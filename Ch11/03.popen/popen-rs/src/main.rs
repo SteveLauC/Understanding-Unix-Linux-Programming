@@ -51,7 +51,7 @@ fn my_popen<S: AsRef<OsStr>>(command: S, op_type: Type) -> BufReader<File> {
             }
         }
     }
-    unimplemented!()
+    unreachable!()
 }
 
 fn my_pclose() {
