@@ -51,7 +51,7 @@ int main(int ac, char ** av) {
         oops("write");
     }
 
-    while((n_read = read(client_fd, buffer, BUFSIZ)>0)) {
+    while((n_read = read(client_fd, buffer, BUFSIZ))>0 ) {
         if(write(1, buffer, n_read) == -1) {
             oops("write");
         }
