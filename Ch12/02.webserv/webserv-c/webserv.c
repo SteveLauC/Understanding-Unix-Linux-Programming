@@ -314,8 +314,7 @@ void do_exec(const char * prog, int fd) {
     } 
 
     fclose(client_writer);
-    fclose(exe_reader);
-
+    pclose(exe_reader);
 }
 
 void do_cat(const char * f, int fd) {
