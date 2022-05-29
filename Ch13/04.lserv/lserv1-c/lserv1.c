@@ -9,9 +9,10 @@
 #include "lserv_funcs1.h"
 
 #define MSG_LEN 128
+
 int main() {
     struct sockaddr_in client_addr;
-    socklen_t addrlen = sizeof(client_addr);
+    socklen_t addrlen = 0;
     char buf[MSG_LEN];
     int ret = -1;
     int server_sock = setup();

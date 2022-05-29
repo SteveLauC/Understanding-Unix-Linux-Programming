@@ -123,7 +123,9 @@ void handle_request(char * req, struct sockaddr_in * client, socklen_t add_len) 
     char * response = NULL;
     int ret = 0;
 
-    // here, we categorize a request into two sets, acquiring or releasing a ticket
+    // here, we categorize requests into two sets: 
+    // 1. ticket acquisition 
+    // 2. ticket release
     if (strncmp(req, "HELO", 4) == 0) {
         response = do_hello(req);
     } else if (strncmp(req, "GBYE", 4) == 0) {
@@ -134,8 +136,8 @@ void handle_request(char * req, struct sockaddr_in * client, socklen_t add_len) 
 
     narrate("SAID: ", response, client);
     assert(client->sin_family == AF_INET);
-    ret = sendto(server_sock, response, strlen(response), 0, (struct sockaddr *)&client, add_len);
+    ret = sendto(server_sock, response, strlen(response), 0, (struct sockaddr *)client, add_len);
     if (ret == -1) {
-        perror("SERVER sendto failed"); 
+        perror("SERVER sendto failed");
     }
 }
