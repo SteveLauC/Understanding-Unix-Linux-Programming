@@ -1,10 +1,10 @@
 /*
- * lclnt_funcs1.c: functions for the client of licence client
+ * lclnt_funcs1.c: functions for the client of license client
  *
- * acquire a licence:
+ * acquire a license:
  *      client: HELO pid
  *      server: TICK ticket -string(on successs) FAIL failure -msg(on failure)
- * release a licence:
+ * release a license:
  *      client: GBYE ticket -string
  *      server: THNX info -string(on success) FAIL error -string(on failure)
 */
@@ -32,7 +32,7 @@ static int have_ticket = 0;          // set when we have a ticket(state indicato
 #define oops(msg){perror(msg); exit(1);} // error handling function
 
 /*
- * purpose: get pid, socket and address of licence server
+ * purpose: get pid, socket and address of license server
  *
  * note: assume license server is on the same host with client
 */
@@ -51,7 +51,7 @@ void setup(){
 }
 
 /*
- * purpose: shut down the licence client
+ * purpose: shut down the license client
  *
  * action: close the client socket file descriptor
 */
@@ -104,7 +104,7 @@ char * do_transacion(char * msg) {
 }
 
 /*
- * purpose: get a ticket from the licence server
+ * purpose: get a ticket from the license server
  *
  * return: 0 on success, -1 on failure
 */
