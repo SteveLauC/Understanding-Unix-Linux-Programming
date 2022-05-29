@@ -3,10 +3,10 @@
  *
  * acquire a license:
  *      client: HELO pid
- *      server: TICK ticket -string(on successs) FAIL failure -msg(on failure)
+ *      server: TICK pid index(on successs) FAIL failure-msg(on failure)
  * release a license:
- *      client: GBYE ticket -string
- *      server: THNX info -string(on success) FAIL error -string(on failure)
+ *      client: GBYE pid index
+ *      server: THNX see ya!(on success) FAIL error-string(on failure)
 */
 
 #include <stdio.h>
@@ -120,14 +120,12 @@ int get_ticket(){
         return -1;
     }
 
-    if (strncmp(buf, "TICK", 4) == 0) {
+    if (strncmp(response, "TICK", 4) == 0) {
         strcpy(ticket_buf, response+5); // copy "ticket -string" to ticket_buf
         have_ticket = 1;
         narrate("got a ticket", ticket_buf);
         return 0;
-    }
-
-    if (strncmp(buf, "FAIL", 4) == 0) {
+    }else if (strncmp(response, "FAIL", 4) == 0) {
         narrate("Could not get a ticket", response);
     } else {
         narrate("unknown message", response);
