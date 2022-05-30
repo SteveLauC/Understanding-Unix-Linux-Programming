@@ -21,9 +21,9 @@
 
 #define MSG_LEN 512
 #define oops(msg){perror(msg); exit(1);}
-#define SOCKNAME "/tmp/lgofilesock"
+#define SOCKNAME "/tmp/logfilesock"
 
-int main() {
+int main(void) {
     struct sockaddr_un server_addr;
     server_addr.sun_family = AF_UNIX;
     strncpy(server_addr.sun_path, SOCKNAME, strlen(SOCKNAME)+1);

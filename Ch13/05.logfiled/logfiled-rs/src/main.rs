@@ -1,9 +1,9 @@
 use chrono::{DateTime, Local};
-use std::io::Read;
-use std::os::unix::net::{UnixListener, UnixStream};
+use std::os::unix::net::UnixDatagram;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 const SOCKNAME: &str = "/tmp/logfilesock";
+const MSG_LEN: usize = 512;
 
 fn show_time(seconds: u64) -> String {
     let date: DateTime<Local> = DateTime::from(UNIX_EPOCH + Duration::from_secs(seconds));
@@ -11,15 +11,12 @@ fn show_time(seconds: u64) -> String {
 }
 
 fn main() {
-    let listener: UnixListener = UnixListener::bind(SOCKNAME).unwrap();
+    let server: UnixDatagram = UnixDatagram::bind(SOCKNAME).unwrap();
     let mut msg_num: u32 = 0;
 
-    for msg in listener.incoming() {
-        let mut msg: UnixStream = msg.unwrap();
-        msg_num += 1;
-
-        let mut buf: String = String::with_capacity(512);
-        msg.read_to_string(&mut buf).unwrap();
+    loop {
+        let mut buf: [u8; MSG_LEN] = [0; MSG_LEN];
+        let n: usize = server.recv(&mut buf).unwrap();
 
         println!(
             "[{:5}] {} {}",
@@ -30,7 +27,8 @@ fn main() {
                     .unwrap()
                     .as_secs()
             ),
-            buf
+            std::str::from_utf8(&buf[..n]).unwrap()
         );
+        msg_num += 1;
     }
 }
