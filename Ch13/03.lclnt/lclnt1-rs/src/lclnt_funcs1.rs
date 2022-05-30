@@ -1,6 +1,7 @@
 use nix::unistd::gethostname;
 use std::net::{SocketAddr, ToSocketAddrs, UdpSocket};
 use std::process::id;
+use std::str;
 use std::thread::sleep;
 use std::time::Duration;
 
@@ -32,25 +33,24 @@ impl Client {
         }
     }
 
-    pub fn do_transaction(&self, msg: String) -> Result<String, std::io::Error> {
-        self.sd.send_to(msg.as_bytes(), self.server_addr)?;
+    pub fn do_transaction(&self, msg: String) -> String {
+        eprintln!("debug: sendto={}|", msg);
+        self.sd.send_to(msg.as_bytes(), self.server_addr).unwrap();
 
-        let mut response: Vec<u8> = Vec::with_capacity(MSG_LEN);
-        self.sd.recv(&mut response)?;
-
-        Ok(unsafe { String::from_utf8_unchecked(response) })
+        let mut response: [u8; MSG_LEN] = [0; 128];
+        let n = self.sd.recv(&mut response).unwrap();
+        str::from_utf8(&response[..n]).unwrap().to_owned()
     }
 
     pub fn get_ticket(&mut self) {
-        if let Ok(response) = self.do_transaction(format!("HELO {}", self.pid)) {
-            if response.starts_with("TICK") {
-                eprintln!("got ticket {}", &response[5..]);
-                self.ticket = Some(response[5..].to_owned());
-            } else if response.starts_with("FAIL") {
-                eprintln!("could not get ticket {}", &response[5..]);
-            } else {
-                eprintln!("unknown message: {}", &response[5..]);
-            }
+        let response: String = self.do_transaction(format!("HELO {}", self.pid));
+        if response.starts_with("TICK") {
+            eprintln!("got ticket {}", &response[5..]);
+            self.ticket = Some(response[5..].to_owned());
+        } else if response.starts_with("FAIL") {
+            eprintln!("could not get ticket {}", &response[5..]);
+        } else {
+            eprintln!("unknown message: {}", &response[5..]);
         }
     }
 
@@ -58,15 +58,13 @@ impl Client {
         if self.ticket.is_none() {
             return;
         }
-        if let Ok(response) = self.do_transaction(format!("GBYE {}", self.ticket.as_ref().unwrap()))
-        {
-            if response.starts_with("THNX") {
-                eprintln!("released ticket ok");
-            } else if response.starts_with("FAIL") {
-                eprintln!("release failed {}", &response[5..]);
-            } else {
-                eprintln!("unknown message {}", &response[5..]);
-            }
+        let response = self.do_transaction(format!("GBYE {}", self.ticket.as_ref().unwrap()));
+        if response.starts_with("THNX") {
+            eprintln!("released ticket ok");
+        } else if response.starts_with("FAIL") {
+            eprintln!("release failed {}", &response[5..]);
+        } else {
+            eprintln!("unknown message {}", &response[5..]);
         }
     }
 
