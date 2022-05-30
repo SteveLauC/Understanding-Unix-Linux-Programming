@@ -34,7 +34,6 @@ impl Client {
     }
 
     pub fn do_transaction(&self, msg: String) -> String {
-        eprintln!("debug: sendto={}|", msg);
         self.sd.send_to(msg.as_bytes(), self.server_addr).unwrap();
 
         let mut response: [u8; MSG_LEN] = [0; 128];
