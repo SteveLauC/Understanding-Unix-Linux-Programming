@@ -20,8 +20,8 @@ fn main() {
     t1.join().unwrap();
     t2.join().unwrap();
 
-    unsafe{
-        println!("{}: total words", TOTAL_WORDS+1);
+    unsafe {
+        println!("{}: total words", TOTAL_WORDS + 1);
     }
 }
 
@@ -31,7 +31,11 @@ fn count_words(file_name: &str) {
 
     reader.read_to_end(&mut buf).unwrap();
 
-    unsafe {
-        TOTAL_WORDS += buf.iter().filter(|item| **item == b' ').count();
+    let mut prev: char = '\0';
+    for idx in 0..buf.len() {
+        if !char::from(buf[idx]).is_ascii_alphanumeric() && prev.is_ascii_alphanumeric() {
+            unsafe{TOTAL_WORDS += 1;}
+        }
+        prev = char::from(buf[idx]);
     }
 }
