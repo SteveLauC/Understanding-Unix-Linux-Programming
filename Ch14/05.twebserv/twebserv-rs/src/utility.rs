@@ -48,7 +48,7 @@ pub fn process_request(header: String, client: &TcpStream, status: &Status) {
         }
     }
 }
-pub fn http_reply(
+fn http_reply(
     stream: &mut BufWriter<&TcpStream>,
     code: u32,
     msg: &str,
@@ -66,7 +66,7 @@ pub fn http_reply(
     }
 }
 
-pub fn not_implemented(stream: &TcpStream) {
+fn not_implemented(stream: &TcpStream) {
     let mut buffered_writer: BufWriter<&TcpStream> = BufWriter::new(stream);
 
     // header
@@ -79,7 +79,7 @@ pub fn not_implemented(stream: &TcpStream) {
     );
 }
 
-pub fn do_404(stream: &TcpStream) {
+fn do_404(stream: &TcpStream) {
     let mut buffered_writer: BufWriter<&TcpStream> = BufWriter::new(stream);
 
     http_reply(
@@ -91,20 +91,20 @@ pub fn do_404(stream: &TcpStream) {
     );
 }
 
-pub fn is_dir(file_name: &str) -> bool {
+fn is_dir(file_name: &str) -> bool {
     Path::new(file_name).is_dir()
 }
 
-pub fn not_exist(file_name: &str) -> bool {
+fn not_exist(file_name: &str) -> bool {
     eprintln!("debug: file_name: {}", file_name);
     !Path::new(file_name).exists()
 }
 
-pub fn file_type(file_name: &str) -> Option<&OsStr> {
+fn file_type(file_name: &str) -> Option<&OsStr> {
     Path::new(file_name).extension()
 }
 
-pub fn do_ls(dir_name: &str, stream: &TcpStream) {
+fn do_ls(dir_name: &str, stream: &TcpStream) {
     let entries: ReadDir = read_dir(dir_name).unwrap();
     let mut buffered_writer: BufWriter<&TcpStream> = BufWriter::new(stream);
     http_reply(&mut buffered_writer, 200, "OK", "text/plain", None);
@@ -118,7 +118,7 @@ pub fn do_ls(dir_name: &str, stream: &TcpStream) {
     buffered_writer.write(b"\r\n").unwrap();
 }
 
-pub fn do_cat(file_name: &str, stream: &TcpStream) {
+fn do_cat(file_name: &str, stream: &TcpStream) {
     let mut content_type: &str = "text/plain";
     if let Some(ty) = file_type(file_name) {
         let ty: &str = ty.to_str().unwrap();
