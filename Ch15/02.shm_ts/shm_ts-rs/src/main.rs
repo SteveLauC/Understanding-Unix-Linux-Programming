@@ -1,5 +1,6 @@
+use std::ffi::CString;
 use chrono::{DateTime, Local};
-use libc::{c_void, shmat, shmctl, shmget, shmid_ds, IPC_CREAT, IPC_RMID};
+use libc::{c_void, shmat, shmctl, shmget, shmid_ds, IPC_CREAT, IPC_RMID, strlen};
 use std::process::exit;
 use std::ptr::null;
 use std::{
@@ -30,9 +31,9 @@ fn main() {
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_secs();
-        let now_str: String = show_time(now);
+        let now_str: CString = CString::new(show_time(now)).unwrap();
         unsafe {
-            now_str.as_ptr().copy_to(mem_ptr as *mut u8, now_str.len());
+            now_str.as_ptr().copy_to(mem_ptr as *mut i8, strlen(now_str.as_ptr()));
         }
         sleep(Duration::from_secs(1));
     }
