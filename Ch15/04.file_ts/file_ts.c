@@ -40,6 +40,11 @@ int main(int ac, char * av[]) {
         // lock the file for write purpose
         lock_operation(fd, F_WRLCK);
 
+        // move the cursor back to start
+        if (lseek(fd, 0, SEEK_SET) == -1) {
+            oops("lseek", 3);
+        }
+        // printf("debug: cursor: %ld\n", lseek(fd, 0, SEEK_CUR));
         if(write(fd, message, strlen(message)) == -1) {
             oops("write", 4);
         }

@@ -7,4 +7,4 @@ edition = "2021"
 
 [dependencies]
 chrono = "0.4.19"
-file-lock = "2.1.4"
+nix = {version = "0.24.1", feature = ["fs"]}
