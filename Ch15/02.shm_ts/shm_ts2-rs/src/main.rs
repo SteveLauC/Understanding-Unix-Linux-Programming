@@ -1,3 +1,9 @@
+/*
+   shm_rs2-rs does not remove the shared memory and semaphores
+
+   So when you use `Ctrl-C` to interrupt the server and try to run it again
+   you will get a complaint from `semget` due to the use of flag(IPC_EXCL)
+*/
 use chrono::{DateTime, Local};
 use libc::{c_short, c_void, shmctl, IPC_CREAT, IPC_EXCL, IPC_RMID};
 use libc::{sembuf, semctl, semget, semop, shmat, shmget, shmid_ds};
@@ -28,6 +34,7 @@ fn main() {
     }
 
     let sem_set_id: i32 = unsafe { semget(TIME_SEM_KEY, 2, IPC_CREAT | IPC_EXCL | 0o666) };
+    // let sem_set_id: i32 = unsafe { semget(TIME_SEM_KEY, 2, IPC_CREAT | 0o666) };
     if sem_set_id == -1 {
         eprintln!("semget");
         exit(3);
