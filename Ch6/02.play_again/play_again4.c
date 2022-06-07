@@ -91,9 +91,9 @@ void set_cr_noecho_mode() {
 */
 void set_non_blocking_mode() {
     int terflags;
-    terflags  = fcntl(0, F_GETFD);
+    terflags  = fcntl(0, F_GETFL);
     terflags |= O_NONBLOCK;
-    fcntl(0, F_SETFD, terflags);
+    fcntl(0, F_SETFL, terflags);
 }
 
 /* 

@@ -1,14 +1,11 @@
-// play_again4-rs is UNFINISHED
-
-
 use std::io::{stdin, stdout, Read, Write};
 use std::process;
 use std::thread::sleep;
 use std::time::Duration;
 
 use libc::{c_int, fcntl, F_GETFL, F_SETFL, O_NONBLOCK};
+use nix::sys::signal::{signal, SigHandler, SIGINT, SIGQUIT};
 use termios::{tcsetattr, Termios, ECHO, ICANON, TCSANOW, VMIN};
-use nix::sys::signal::{signal, SIGINT, SIGQUIT, SigHandler};
 
 const TRIES: i32 = 3;
 const SLEEPTIME: u64 = 2;
@@ -88,9 +85,9 @@ fn get_response(mut max_tries: i32) -> u8 {
 fn tty_mode(how: i32, mode: &mut Termios, flags: &mut c_int) {
     if how == 0 {
         *mode = Termios::from_fd(0).expect("Can not fetch original confuguration");
-        *flags = unsafe{fcntl(0, F_GETFL)};
+        *flags = unsafe { fcntl(0, F_GETFL) };
     }
-    
+
     if how == 1 {
         tcsetattr(0, TCSANOW, mode).expect("Can not send the original mode back");
         unsafe { fcntl(0, F_SETFL, flags) };
@@ -98,20 +95,20 @@ fn tty_mode(how: i32, mode: &mut Termios, flags: &mut c_int) {
 }
 
 extern "C" fn ctrlc_handler(_signum: c_int) {
-    
     process::exit(130);
 }
 fn main() {
     let mut orig_mode: Termios = Termios::from_fd(0).expect("Can not fetch original confuguration");
     let mut orig_flags: c_int = 0;
 
-    tty_mode(0, &mut orig_mode, &mut orig_flags);   
+    tty_mode(0, &mut orig_mode, &mut orig_flags);
 
     set_cr_noecho_mode();
     set_non_blocking_mode();
 
-    unsafe{
-        signal(SIGINT, SigHandler::Handler(ctrlc_handler)).expect("can not get the previous handler");
+    unsafe {
+        signal(SIGINT, SigHandler::Handler(ctrlc_handler))
+            .expect("can not get the previous handler");
         signal(SIGQUIT, SigHandler::SigIgn).expect("can not get the previous handler");
     };
 
