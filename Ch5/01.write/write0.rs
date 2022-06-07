@@ -1,15 +1,3 @@
-// Here is a little bug I cannot figure out:(
-//
-// let's assume the following test scene:
-// $ .write0 /dev/pts/4
-// world
-// After typing `world`, you wanna send it and quit the program
-//
-// In the C version of write0, 2 EOFs are adequate.
-// Nevertheless, you need 3 EOFs here.
-//
-// idk the reason, `fgets` and `read_until` are both buffered
-// If you know this, PR welcome.
 use std::env::args;
 use std::process;
 use std::io::{stdin, Stdin, Write, BufRead, BufReader};
@@ -42,10 +30,11 @@ fn main() {
             break;
         }
 
-        // println!("one iteration executed, read {} bytes", n);
+        println!("one iteration executed");
         if tty.write(buf.as_slice()).is_err() {
             break;
         }
+        println!("write one piece of contents");
         buf.clear();
     }
 }
