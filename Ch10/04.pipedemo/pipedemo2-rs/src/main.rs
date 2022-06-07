@@ -1,6 +1,4 @@
-// Rust code snippet
-
-use nix::unistd::{fork, pipe, ForkResult}; // needs extern crate `nix`
+use nix::unistd::{fork, pipe, ForkResult};
 use std::fs::File;
 use std::io::{stdout, Read, Write};
 use std::os::unix::io::{FromRawFd, RawFd};

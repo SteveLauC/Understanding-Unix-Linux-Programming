@@ -2,7 +2,6 @@
     sigactdemo.c
     purpose: shows use of sigaction()
     feature: blocks ^\ while handling ^C, does not rest ^C handler, so two kill.
-    bug: when an explicit EOF(defaults to be ^D) is given, the program will continuously print x to output.
 */
 
 #include <stdio.h>
@@ -39,7 +38,9 @@ int main() {
         exit(EXIT_FAILURE);
     } else {
         while(1) {
-            fgets(x, INPUTLEN, stdin);
+            if (fgets(x, INPUTLEN, stdin) == NULL) {
+                break;
+            }
             printf("input: %s", x);
         }
     }

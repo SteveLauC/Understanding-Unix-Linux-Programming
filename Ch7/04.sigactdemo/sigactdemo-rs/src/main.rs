@@ -1,7 +1,3 @@
-/*
-    for the weird bug of sigactdemo.c(see sigactdemo.c line 5), I just use `read_line` in the rust implementation instead of
-    simulating `fgets()`'s behaviour.
-*/
 use libc::c_int;
 use nix::sys::signal::{sigaction, SaFlags, SigAction, SigHandler, SigSet, SIGINT, SIGQUIT};
 use std::io::stdin;
@@ -30,7 +26,10 @@ fn main() {
     } else {
         loop {
             stdin().read_line(&mut x).expect("Can not read from stdin");
-            println!("input: {}", x);
+            if x.is_empty() {
+                break;
+            }
+            println!("input: {}", x.trim());
             x.clear();
         }
     }
