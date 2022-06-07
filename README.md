@@ -30,5 +30,9 @@ appreciated.
 | [Ch9 02.smsh smsh2-rs](https://github.com/SteveLauC/Understanding-Unix-Linux-Programming/blob/main/Ch9/02.smsh/smsh2-rs/src/execute.rs)|Buggy|when an invalid cmd is given, the child process will panic due to the call of `unreachable!()`|
 | [Ch9 02.smsh smsh3-rs](https://github.com/SteveLauC/Understanding-Unix-Linux-Programming/blob/main/Ch9/02.smsh/smsh3-rs/src/execute.rs)|Buggy|when an invalid cmd is given, the child process will panic due to the call of `unreachable!()`|
 | [Ch9 02.smsh smsh4-rs](https://github.com/SteveLauC/Understanding-Unix-Linux-Programming/blob/main/Ch9/02.smsh/smsh4-rs/src/execute.rs)|Buggy|when an invalid cmd is given, the child process will panic due to the call of `unreachable!()`|
+| [Ch12 01.socklib socklib.rs](https://github.com/SteveLauC/Understanding-Unix-Linux-Programming/blob/main/Ch12/01.socklib/socklib-rs/src/lib.rs)|Unimplemented| socklib.c is just some encapsulations of POSIX socket APIs, there is no need to do this in Rust cuz the API provided by std is pretty good|
+| [Ch14 04.twordcount twordcount4-rs](https://github.com/SteveLauC/Understanding-Unix-Linux-Programming/blob/main/Ch14/04.twordcount/twordcount4-rs/src/main.rs)|Unimplemented|I don't know how to use condition variable in Rust|
+| [Ch14 07.tanimate tanimate-rs](https://github.com/SteveLauC/Understanding-Unix-Linux-Programming/blob/main/Ch14/07.tanimate/tanimate-rs/src/main.rs)|does not work|IDK:(|
+
 
 Enjoy:)

@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 chrono = "0.4.19"
 libc = "0.2.126"
+nix = "0.24.1"
