@@ -19,7 +19,7 @@ fn main() {
     if ac == 1 {
         do_more(io::stdin().lock());
     } else {
-        av.remove(0);
+        av.swap_remove(0);
         for file_name in av.iter() {
             let error_msg: String = format!("can not open {}", file_name);
             let file: File = File::open(file_name).expect(&error_msg);
