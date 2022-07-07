@@ -3,9 +3,3 @@
 
 # and target directory
 **/target
-
-# clion config file
-**/.idea
-
-# clang-format configuration file
-**/.clang-format
