@@ -20,38 +20,45 @@
 #include <time.h>
 
 #define MSG_LEN 512
-#define oops(msg){perror(msg); exit(1);}
+#define oops(msg)            \
+	{                    \
+		perror(msg); \
+		exit(1);     \
+	}
 #define SOCKNAME "/tmp/logfilesock"
 
-int main(void) {
-    struct sockaddr_un server_addr;
-    server_addr.sun_family = AF_UNIX;
-    strncpy(server_addr.sun_path, SOCKNAME, strlen(SOCKNAME)+1);
+int main(void)
+{
+	struct sockaddr_un server_addr;
+	server_addr.sun_family = AF_UNIX;
+	strncpy(server_addr.sun_path, SOCKNAME, strlen(SOCKNAME) + 1);
 
-    int server_sock = socket(AF_UNIX, SOCK_DGRAM, 0);
-    if (server_sock == 0) {
-        oops("socket");
-    }
+	int server_sock = socket(AF_UNIX, SOCK_DGRAM, 0);
+	if (server_sock == 0) {
+		oops("socket");
+	}
 
-    // bind the address
+	// bind the address
 
-    if (bind(server_sock, (struct sockaddr *)&server_addr, offsetof(struct sockaddr_un, sun_path)+strlen(server_addr.sun_path)+1) == -1) {
-        oops("bind");
-    }
+	if (bind(server_sock, (struct sockaddr *)&server_addr,
+		 offsetof(struct sockaddr_un, sun_path) +
+			 strlen(server_addr.sun_path) + 1) == -1) {
+		oops("bind");
+	}
 
-    char msg[MSG_LEN];
-    time_t now;
-    char * time_str = NULL;
-    int msg_num = 0;
-    while (1) {
-        int idx = read(server_sock, msg, MSG_LEN);
-        msg[idx] = '\0';
+	char msg[MSG_LEN];
+	time_t now;
+	char *time_str = NULL;
+	int msg_num = 0;
+	while (1) {
+		int idx = read(server_sock, msg, MSG_LEN);
+		msg[idx] = '\0';
 
-        time(&now);
-        time_str = ctime(&now);
-        time_str[strlen(time_str)-1] = '\0';
+		time(&now);
+		time_str = ctime(&now);
+		time_str[strlen(time_str) - 1] = '\0';
 
-        printf("[%5d] %s %s\n", msg_num++, time_str, msg);
-        fflush(stdout);
-    }
+		printf("[%5d] %s %s\n", msg_num++, time_str, msg);
+		fflush(stdout);
+	}
 }

@@ -15,22 +15,24 @@
   method: use getchar and ignore non y/n answers
   returns: 0=>yes, 1=>no
 */
-int get_response(char * question) {
-    printf("%s (y/n)", QUESTION);
-    while(1) {
-        switch (getchar() ) {
-            case 'y':
-            case 'Y':
-                return 0;
-            case 'n':
-            case 'N':
-            case EOF:
-                return 1;
-        }
-    }
+int get_response(char *question)
+{
+	printf("%s (y/n)", QUESTION);
+	while (1) {
+		switch (getchar()) {
+		case 'y':
+		case 'Y':
+			return 0;
+		case 'n':
+		case 'N':
+		case EOF:
+			return 1;
+		}
+	}
 }
 
-int main() {
-    int response = get_response(QUESTION);
-    return response;
+int main()
+{
+	int response = get_response(QUESTION);
+	return response;
 }

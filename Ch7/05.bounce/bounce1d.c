@@ -12,78 +12,79 @@
 
 // seme global settings main and the handler use
 #define MESSAGE "hello"
-#define BLANK   "     "
+#define BLANK "     "
 
 int set_ticker(int);
 
-int row = 10;        // current row
-int col = 0;         // current column
-int dir = 1;         // where we are going
+int row = 10; // current row
+int col = 0; // current column
+int dir = 1; // where we are going
 int MESSAGE_LEN = strlen(MESSAGE);
 
-void move_msg(int signum) {
-    // reset, just in case.
-    signal(SIGALRM, move_msg);  
+void move_msg(int signum)
+{
+	// reset, just in case.
+	signal(SIGALRM, move_msg);
 
-    move(row, col);
-    addstr(BLANK);
-    // fprintf(stderr, "Write %ld spaces to %d\n", strlen(BLANK), col);
-    col += dir;
-    move(row, col);
-    addstr(MESSAGE);
-    // fprintf(stderr, "Write %d chars to %d\n", MESSAGE_LEN, col);
-    refresh();
+	move(row, col);
+	addstr(BLANK);
+	// fprintf(stderr, "Write %ld spaces to %d\n", strlen(BLANK), col);
+	col += dir;
+	move(row, col);
+	addstr(MESSAGE);
+	// fprintf(stderr, "Write %d chars to %d\n", MESSAGE_LEN, col);
+	refresh();
 
-    // handle borders
-    if (dir == -1 && col <= 0) {
-        dir = 1;
-    }
+	// handle borders
+	if (dir == -1 && col <= 0) {
+		dir = 1;
+	}
 
-    if (dir == 1&&(col+MESSAGE_LEN) >= COLS) {
-        dir = -1;
-    }
+	if (dir == 1 && (col + MESSAGE_LEN) >= COLS) {
+		dir = -1;
+	}
 }
 
-int main() {
-    int delay = 1000; // 200 milliseconds = 0.2 seconds
-    int ndelay;   // new delay
-    int c;        // user input
+int main()
+{
+	int delay = 1000; // 200 milliseconds = 0.2 seconds
+	int ndelay; // new delay
+	int c; // user input
 
+	initscr();
+	crmode(); // make tty enter char-by-char mode
+	noecho(); // disable echo bit
+	clear();
 
-    initscr();
-    crmode();     // make tty enter char-by-char mode
-    noecho();     // disable echo bit
-    clear();
+	move(row, col);
+	addstr(MESSAGE);
+	signal(SIGALRM, move_msg);
+	set_ticker(delay);
 
-    move(row, col);
-    addstr(MESSAGE);
-    signal(SIGALRM, move_msg);
-    set_ticker(delay);
+	while (1) {
+		ndelay = 0;
+		c = getch();
+		if (c == 'Q') {
+			break;
+		}
 
-    while(1) {
-        ndelay = 0;
-        c = getch();
-        if (c == 'Q'){
-            break;
-        }
+		if (c == ' ') {
+			dir = -dir;
+		}
+		if (c == 'f' && delay > 2) {
+			ndelay = delay / 2;
+		}
 
-        if (c == ' ') {
-            dir = -dir;
-        }
-        if (c == 'f' && delay > 2) {
-            ndelay = delay/2;
-        }
+		if (c == 's') {
+			ndelay = delay * 2;
+		}
 
-        if (c == 's') {
-            ndelay = delay*2;
-        }
+		if (ndelay > 0) {
+			delay = ndelay;
+			set_ticker(delay);
+		}
+	}
 
-        if (ndelay > 0) {
-            delay = ndelay;
-            set_ticker(delay);
-        }
-    }
-
-    endwin();
-    return 0;
+	endwin();
+	return 0;
 }

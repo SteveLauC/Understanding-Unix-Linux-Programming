@@ -10,9 +10,9 @@
 #define false 0
 
 // function signatures
-char * next_cmd(char * , FILE *);
+char *next_cmd(char *, FILE *);
 char *newstr(char *, int);
-char ** splitline(char *);
+char **splitline(char *);
 void freelist(char **);
 void *emalloc(size_t);
 void *erealloc(void *, size_t);
@@ -23,7 +23,5 @@ int do_control_command(char **);
 int syn_err(char *);
 int process(char **);
 void fatal(char *, char *, int);
-
-
 
 #endif

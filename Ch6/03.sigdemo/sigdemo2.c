@@ -8,16 +8,15 @@
 #include <unistd.h>
 #include <signal.h>
 
+int main()
+{
+	signal(SIGINT, SIG_IGN);
 
+	printf("You can not stop me! \n");
+	while (1) {
+		sleep(1);
+		printf("haha\n");
+	}
 
-int main() {
-    signal(SIGINT, SIG_IGN);
-
-    printf("You can not stop me! \n");
-    while (1) {
-        sleep(1);
-        printf("haha\n");
-    }
-
-    return 0;
+	return 0;
 }

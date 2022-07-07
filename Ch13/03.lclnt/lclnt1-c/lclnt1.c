@@ -7,19 +7,21 @@
 #include <unistd.h>
 #include "lclnt_funcs1.h"
 
-void do_regular_work() {
-    printf("SuperSleep version 1 running licenced software");
-    sleep(10); 
+void do_regular_work()
+{
+	printf("SuperSleep version 1 running licenced software");
+	sleep(10);
 }
 
-int main() {
-    setup();
+int main()
+{
+	setup();
 
-    if (get_ticket()!=0) {
-        exit(0);
-    }
+	if (get_ticket() != 0) {
+		exit(0);
+	}
 
-    do_regular_work();
-    release_ticket();
-    shut_down();
+	do_regular_work();
+	release_ticket();
+	shut_down();
 }

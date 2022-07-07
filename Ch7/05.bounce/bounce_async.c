@@ -27,54 +27,58 @@ void on_input(int signum);
 void enable_kbd_signals();
 int set_ticker(int n_msecs);
 
-int main() {
-    initscr();
-    crmode();
-    noecho();
-    clear();
+int main()
+{
+	initscr();
+	crmode();
+	noecho();
+	clear();
 
-    signal(SIGIO, on_input);
-    enable_kbd_signals();
-    signal(SIGALRM, on_alarm);
-    set_ticker(delay);
+	signal(SIGIO, on_input);
+	enable_kbd_signals();
+	signal(SIGALRM, on_alarm);
+	set_ticker(delay);
 
-    move(row, col);
-    addstr(MSG);
+	move(row, col);
+	addstr(MSG);
 
-    while(!done) {
-        pause();
-    }
+	while (!done) {
+		pause();
+	}
 
-    endwin();
-    return 0;
+	endwin();
+	return 0;
 }
 
-void on_input(int signum) {
-    int c = getch();
-    if (c == 'Q' || c == EOF) {
-        done = 1;
-    } else if (c == ' ') {
-        dir *= -1;
-    }
+void on_input(int signum)
+{
+	int c = getch();
+	if (c == 'Q' || c == EOF) {
+		done = 1;
+	} else if (c == ' ') {
+		dir *= -1;
+	}
 }
 
-void on_alarm(int signum) {
-    signal(SIGALRM, on_alarm);
-    mvaddstr(row, col, BLK);
-    col+=dir;
-    mvaddstr(row, col, MSG);
-    refresh();
+void on_alarm(int signum)
+{
+	signal(SIGALRM, on_alarm);
+	mvaddstr(row, col, BLK);
+	col += dir;
+	mvaddstr(row, col, MSG);
+	refresh();
 
-    // handle bounders
-    if (dir==-1 && col <= 0) {
-        dir = 1;
-    }
-    if (dir == 1 && col+strlen(MSG)>=COLS) {
-        dir = -1;
-    }
+	// handle bounders
+	if (dir == -1 && col <= 0) {
+		dir = 1;
+	}
+	if (dir == 1 && col + strlen(MSG) >= COLS) {
+		dir = -1;
+	}
 }
 
-void enable_kbd_signals() {
-    fcntl(0, F_SETOWN, getpid());
-    fcntl(0, F_SETFL, fcntl(0, F_GETFL)|O_ASYNC);
+void enable_kbd_signals()
+{
+	fcntl(0, F_SETOWN, getpid());
+	fcntl(0, F_SETFL, fcntl(0, F_GETFL) | O_ASYNC);
 }

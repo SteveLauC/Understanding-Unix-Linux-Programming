@@ -8,18 +8,19 @@
 #include <stdlib.h>
 #include <termio.h>
 
-int main() {
-    struct termios buf;
+int main()
+{
+	struct termios buf;
 
-    if (-1 == tcgetattr(0, &buf)) {
-        perror("tcgetattr");
-        exit(EXIT_FAILURE);
-    }
+	if (-1 == tcgetattr(0, &buf)) {
+		perror("tcgetattr");
+		exit(EXIT_FAILURE);
+	}
 
-    if (buf.c_lflag & ECHO) {
-        printf("echo is on, since its bit is 1\n");
-    } else {
-        printf("echo is OFF, since its bit is 0\n");
-    }
-    return 0;
+	if (buf.c_lflag & ECHO) {
+		printf("echo is on, since its bit is 1\n");
+	} else {
+		printf("echo is OFF, since its bit is 0\n");
+	}
+	return 0;
 }

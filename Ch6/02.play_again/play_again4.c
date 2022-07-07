@@ -24,16 +24,18 @@
 /*
   skip over non-legal chars and return y, Y, n, N or EOF
 */
-int get_ok_char() {
-    int c;
-    // in non-blocking mode, getchar() will return EOF if there is no input for it.
-    while ( (c = getchar()) != EOF && strchr("ynYN", c) == NULL) {
-        continue;
-    }
-    // looks like our assertion is useless here, but anyway:)
-    assert(c >= -1 && c <= 127);    // if c is not in this range, `tolower(int c)` will trigger UB
-                                    // see `man 3 tolower` for more details
-    return c;
+int get_ok_char()
+{
+	int c;
+	// in non-blocking mode, getchar() will return EOF if there is no input for it.
+	while ((c = getchar()) != EOF && strchr("ynYN", c) == NULL) {
+		continue;
+	}
+	// looks like our assertion is useless here, but anyway:)
+	assert(c >= -1 &&
+	       c <= 127); // if c is not in this range, `tolower(int c)` will trigger UB
+		// see `man 3 tolower` for more details
+	return c;
 }
 
 /*
@@ -41,47 +43,48 @@ int get_ok_char() {
   method: use getchar and ingore all non y/n answers
   returns: 0=>yes, 1=>no, 2=>timeout
 */
-int get_response(char * question, int max_tries) {
-    int input;
-    printf("%s (y/n)", question);
-    fflush(stdout);
-    while(1) {
-        sleep(SLEEPTIME);     // user has SLEEPTIME seconds to provide the input
-        input = tolower(get_ok_char());
-        max_tries -= 1;       // already tried once
-        if (input == (int)'y') {
-            return 0;
-        }
-        if (input == (int)'n') {
-            return 1;
-        }
-        if (0==max_tries) {
-            return 2;
-        }
-        BEEP;                  // alert user
-    }
+int get_response(char *question, int max_tries)
+{
+	int input;
+	printf("%s (y/n)", question);
+	fflush(stdout);
+	while (1) {
+		sleep(SLEEPTIME); // user has SLEEPTIME seconds to provide the input
+		input = tolower(get_ok_char());
+		max_tries -= 1; // already tried once
+		if (input == (int)'y') {
+			return 0;
+		}
+		if (input == (int)'n') {
+			return 1;
+		}
+		if (0 == max_tries) {
+			return 2;
+		}
+		BEEP; // alert user
+	}
 }
 
 /*
   purpose: put file descriptor 0(i.e. stdin) into char-by-char and noecho mode
   method: disable ICANON and ECHO bits and set tty.c_cc[VMIN] to 1
 */
-void set_cr_noecho_mode() {
-    struct termios ttyinfo;
-    if (-1 == tcgetattr(0, &ttyinfo)) {
-        perror("tcgetattr");
-        exit(EXIT_FAILURE);
-    }
+void set_cr_noecho_mode()
+{
+	struct termios ttyinfo;
+	if (-1 == tcgetattr(0, &ttyinfo)) {
+		perror("tcgetattr");
+		exit(EXIT_FAILURE);
+	}
 
+	ttyinfo.c_lflag &= ~ICANON; // disable ICANON bit
+	ttyinfo.c_lflag &= ~ECHO; // disable ECHO bit
+	ttyinfo.c_cc[VMIN] = 1; // set minimum number of bytes been read to 1
 
-    ttyinfo.c_lflag &= ~ICANON; // disable ICANON bit
-    ttyinfo.c_lflag &= ~ECHO;   // disable ECHO bit
-    ttyinfo.c_cc[VMIN] = 1;     // set minimum number of bytes been read to 1
-
-    if (-1 == tcsetattr(0, TCSANOW, &ttyinfo)) {
-        perror("tcsetattr");
-        exit(EXIT_FAILURE);
-    }
+	if (-1 == tcsetattr(0, TCSANOW, &ttyinfo)) {
+		perror("tcsetattr");
+		exit(EXIT_FAILURE);
+	}
 }
 
 /*
@@ -89,11 +92,12 @@ void set_cr_noecho_mode() {
   method: use fcntl to set bits
   notes: tcsetattr() will do somthing similar, but it is complicated
 */
-void set_non_blocking_mode() {
-    int terflags;
-    terflags  = fcntl(0, F_GETFL);
-    terflags |= O_NONBLOCK;
-    fcntl(0, F_SETFL, terflags);
+void set_non_blocking_mode()
+{
+	int terflags;
+	terflags = fcntl(0, F_GETFL);
+	terflags |= O_NONBLOCK;
+	fcntl(0, F_SETFL, terflags);
 }
 
 /* 
@@ -101,35 +105,38 @@ void set_non_blocking_mode() {
   how = 0: store the setting
   how = 1: restore the setting
 */
-void tty_mode(int how) {
-    static struct termios orig_mode;
-    static int orig_flags;
-    if (how == 0) {
-        tcgetattr(0, &orig_mode);
-        orig_flags = fcntl(0, F_GETFL);
-    } else if (how == 1) {
-        tcsetattr(0, TCSANOW, &orig_mode);
-        fcntl(0, F_SETFL, orig_flags);
-    }
+void tty_mode(int how)
+{
+	static struct termios orig_mode;
+	static int orig_flags;
+	if (how == 0) {
+		tcgetattr(0, &orig_mode);
+		orig_flags = fcntl(0, F_GETFL);
+	} else if (how == 1) {
+		tcsetattr(0, TCSANOW, &orig_mode);
+		fcntl(0, F_SETFL, orig_flags);
+	}
 }
 
 /*
     purpose: called if SIGINT is detected
     action: reset tty and scram
 */
-void ctrlc_handler(int signum) {
-    tty_mode(1);
-    exit(130);
+void ctrlc_handler(int signum)
+{
+	tty_mode(1);
+	exit(130);
 }
 
-int main() {
-    int response = 0;
-    tty_mode(0);
-    set_cr_noecho_mode();
-    set_non_blocking_mode();
-    signal(SIGINT, ctrlc_handler);
-    signal(SIGQUIT, SIG_IGN);
-    response = get_response(QUESTION, TRIES);
-    tty_mode(1);
-    return response;
+int main()
+{
+	int response = 0;
+	tty_mode(0);
+	set_cr_noecho_mode();
+	set_non_blocking_mode();
+	signal(SIGINT, ctrlc_handler);
+	signal(SIGQUIT, SIG_IGN);
+	response = get_response(QUESTION, TRIES);
+	tty_mode(1);
+	return response;
 }

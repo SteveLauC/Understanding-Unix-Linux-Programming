@@ -12,30 +12,31 @@
 #define RIGHTEDGE 30
 #define ROW 10
 
-int main() {
-    char * message = "Hello";
-    char * blank = "     ";
-    int direction = +1;
-    int position = LEFTEDGE;
+int main()
+{
+	char *message = "Hello";
+	char *blank = "     ";
+	int direction = +1;
+	int position = LEFTEDGE;
 
-    initscr();
-    clear();
+	initscr();
+	clear();
 
-    while(1) {
-        move(ROW, position);
-        addstr(message);
-        move(LINES-1, COLS-1);
-        refresh();
-        sleep(1);
-        move(ROW, position);
-        addstr(blank);
-        position += direction;
-        if (position <= LEFTEDGE) {
-            position += 1;
-        }
-        if (position >= RIGHTEDGE) {
-            position -= 1;
-        }
-    }
-    return 0;
+	while (1) {
+		move(ROW, position);
+		addstr(message);
+		move(LINES - 1, COLS - 1);
+		refresh();
+		sleep(1);
+		move(ROW, position);
+		addstr(blank);
+		position += direction;
+		if (position <= LEFTEDGE) {
+			position += 1;
+		}
+		if (position >= RIGHTEDGE) {
+			position -= 1;
+		}
+	}
+	return 0;
 }

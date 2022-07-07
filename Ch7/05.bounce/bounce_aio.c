@@ -29,72 +29,74 @@ void on_input(int signum);
 int set_ticker(int n_msecs);
 void setup_aio_buffer();
 
+int main()
+{
+	initscr();
+	crmode();
+	noecho();
+	clear();
 
-int main() {
-    initscr();
-    crmode();
-    noecho();
-    clear();  
+	signal(SIGIO, on_input);
 
-    signal(SIGIO, on_input);
+	// set up buffer and place a request
+	setup_aio_buffer();
+	aio_read(&kbcbuf);
+	signal(SIGALRM, on_alarm);
 
-    // set up buffer and place a request
-    setup_aio_buffer();
-    aio_read(&kbcbuf);
-    signal(SIGALRM, on_alarm);
+	mvaddstr(row, col, MSG);
+	refresh();
+	set_ticker(delay);
 
-    mvaddstr(row, col, MSG);
-    refresh();
-    set_ticker(delay);
-
-    while(!done) {
-        pause();
-    }
-    endwin();
-    return 0;
+	while (!done) {
+		pause();
+	}
+	endwin();
+	return 0;
 }
 
-void on_alarm(int signum) {
-    // printf("debug: call on_alarm()\n");
-    signal(SIGALRM, on_alarm);
-    mvaddstr(row, col, BLK);
-    col+=dir;
-    mvaddstr(row, col, MSG);
-    refresh();
+void on_alarm(int signum)
+{
+	// printf("debug: call on_alarm()\n");
+	signal(SIGALRM, on_alarm);
+	mvaddstr(row, col, BLK);
+	col += dir;
+	mvaddstr(row, col, MSG);
+	refresh();
 
-    // handle borders
-    if (col <= 0 && dir==-1) {
-        dir *= -1;
-    }
+	// handle borders
+	if (col <= 0 && dir == -1) {
+		dir *= -1;
+	}
 
-    if (col+strlen(MSG)>=COLS && dir == 1) {
-        dir *= -1;
-    }
+	if (col + strlen(MSG) >= COLS && dir == 1) {
+		dir *= -1;
+	}
 }
 
-void on_input(int signum) {
-    // fprintf(stderr, "debug: call on_input()\n");
-    int c = -1;
-    char *cp = (char *) kbcbuf.aio_buf;
-    // check for error
-    if (aio_error(&kbcbuf) != 0) {
-        perror("reading failed");
-    } else {
-        // get number of chars read 
-        if (aio_return(&kbcbuf) == 1) {
-            // printf("debug: get a char\n");
-            c = *cp;
+void on_input(int signum)
+{
+	// fprintf(stderr, "debug: call on_input()\n");
+	int c = -1;
+	char *cp = (char *)kbcbuf.aio_buf;
+	// check for error
+	if (aio_error(&kbcbuf) != 0) {
+		perror("reading failed");
+	} else {
+		// get number of chars read
+		if (aio_return(&kbcbuf) == 1) {
+			// printf("debug: get a char\n");
+			c = *cp;
 
-            if (c == 'Q' || c == EOF) {
-                done = 1;
-            } else if (c == ' ') {
-                dir *= -1;
-            }
-        }
-    }
+			if (c == 'Q' || c == EOF) {
+				done = 1;
+			} else if (c == ' ') {
+				dir *= -1;
+			}
+		}
+	}
 
-    // place a new request
-    aio_read(&kbcbuf);
+	// place a new request
+	aio_read(&kbcbuf);
 }
 
 /*
@@ -102,13 +104,14 @@ void on_input(int signum) {
     First specify ars like those for read(fd, buf, num) and offset;
     Then specify what to do (send signal) and what signal(SIGIO)
 */
-void setup_aio_buffer() {
-    char buf[1] = {0};
-    kbcbuf.aio_fildes = 0;
-    kbcbuf.aio_buf = buf;
-    kbcbuf.aio_nbytes = 1;
-    kbcbuf.aio_offset = 0;
+void setup_aio_buffer()
+{
+	char buf[1] = { 0 };
+	kbcbuf.aio_fildes = 0;
+	kbcbuf.aio_buf = buf;
+	kbcbuf.aio_nbytes = 1;
+	kbcbuf.aio_offset = 0;
 
-    kbcbuf.aio_sigevent.sigev_notify = SIGEV_SIGNAL;
-    kbcbuf.aio_sigevent.sigev_signo = SIGIO;
+	kbcbuf.aio_sigevent.sigev_notify = SIGEV_SIGNAL;
+	kbcbuf.aio_sigevent.sigev_signo = SIGIO;
 }

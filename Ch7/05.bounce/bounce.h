@@ -3,7 +3,7 @@
     some settings for the game
 */
 
-#define BLANK ' ' 
+#define BLANK ' '
 #define DFL_SYMBOL 'O'
 
 // border
@@ -22,21 +22,21 @@
 #define X_TTM 5
 #define Y_TTM 8
 
-struct ppball{
-    // postion
-    int x_pos;
-    int y_pos;
+struct ppball {
+	// postion
+	int x_pos;
+	int y_pos;
 
-    int x_ttm;
-    int y_ttm;
+	int x_ttm;
+	int y_ttm;
 
-    int x_ttg;
-    int y_ttg;
+	int x_ttg;
+	int y_ttg;
 
-    // direction
-    int y_dir;
-    int x_dir;
+	// direction
+	int y_dir;
+	int x_dir;
 
-    // symbol to represent the ball
-    char symbol;
+	// symbol to represent the ball
+	char symbol;
 };

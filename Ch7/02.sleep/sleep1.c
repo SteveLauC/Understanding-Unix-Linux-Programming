@@ -9,16 +9,17 @@
 #include <signal.h>
 #include <unistd.h>
 
-
-void wakeup(int signum) {
-    printf("Alarm received from kernel\n");
+void wakeup(int signum)
+{
+	printf("Alarm received from kernel\n");
 }
 
-int main() {
-    signal(SIGALRM, wakeup);      // set handler
-    printf("About to sleep for 4 seconds\n");
-    alarm(4);                     // set alarm
-    pause();                      // go to sleep
-    printf("Morning so soon?\n"); // morning
-    return 0;
+int main()
+{
+	signal(SIGALRM, wakeup); // set handler
+	printf("About to sleep for 4 seconds\n");
+	alarm(4); // set alarm
+	pause(); // go to sleep
+	printf("Morning so soon?\n"); // morning
+	return 0;
 }

@@ -14,8 +14,6 @@
 #include "smsh.h"
 #include "varlib.h"
 
-
-
 /*
  * purpose: determine if a string is a legal varable name
  *
@@ -29,19 +27,20 @@
  *  
  * return: true on valid name, false on invalid one
 */
-bool okname(char * str) {
-    assert(str != NULL);
-    
-    char * c;
-    for (c = str; *c != 0; c+=1) {
-        if ((isdigit((unsigned char)*c)&&c==str) || !(isalnum((unsigned char)*c)||*c=='_')){
-            return false;
-        }
-    }
-    
-    return (str!=c);
-}
+bool okname(char *str)
+{
+	assert(str != NULL);
 
+	char *c;
+	for (c = str; *c != 0; c += 1) {
+		if ((isdigit((unsigned char)*c) && c == str) ||
+		    !(isalnum((unsigned char)*c) || *c == '_')) {
+			return false;
+		}
+	}
+
+	return (str != c);
+}
 
 /*
  * purpose: ensure variable is valid and execute the assignment
@@ -51,20 +50,21 @@ bool okname(char * str) {
  * 
  * return: -1 on illegal variable name, or the result of VLstore
 */
-int assign(char * str) {
-    assert(str != NULL);
+int assign(char *str)
+{
+	assert(str != NULL);
 
-    char * equal_sign = "=";
-    char * equal_sign_idx = strchr(str, '=');
-    assert(equal_sign_idx != NULL);
+	char *equal_sign = "=";
+	char *equal_sign_idx = strchr(str, '=');
+	assert(equal_sign_idx != NULL);
 
-    char * var = strtok(str, equal_sign);
-    assert(var != NULL);
-    if (okname(var)) {
-        return VLstore(var, equal_sign_idx+1);
-    } else {
-        return -1;
-    }
+	char *var = strtok(str, equal_sign);
+	assert(var != NULL);
+	if (okname(var)) {
+		return VLstore(var, equal_sign_idx + 1);
+	} else {
+		return -1;
+	}
 }
 
 /*
@@ -77,8 +77,10 @@ int assign(char * str) {
  *
  * return: true on built-in commands; otherwise, return false
 */
-bool is_built_in_command(char * cmd) {
-    return ( 0==strcmp(cmd, "set") || 0==strcmp(cmd, "export")|| strchr(cmd, '=')!= NULL);
+bool is_built_in_command(char *cmd)
+{
+	return (0 == strcmp(cmd, "set") || 0 == strcmp(cmd, "export") ||
+		strchr(cmd, '=') != NULL);
 }
 
 /*
@@ -92,25 +94,25 @@ bool is_built_in_command(char * cmd) {
  *  
  * return: 0 on success, non-zero on failure
 */
-int builtin_command(char ** args) {
-    if (strcmp(args[0], "set") == 0) {
-        VLlist(); 
-        return 0;
-    }
-    
-    if (strcmp(args[0], "export") == 0) {
-        if (args[1]!=NULL && okname(args[1]))  {
-            return VLexport(args[1]); 
-        } else {
-            return 1;
-        }
-    }
-    
-    if (strchr(args[0], '=') != NULL) {
-        return assign(args[0]); 
-    }
-    
+int builtin_command(char **args)
+{
+	if (strcmp(args[0], "set") == 0) {
+		VLlist();
+		return 0;
+	}
 
-    // unreachable
-    return 0;
+	if (strcmp(args[0], "export") == 0) {
+		if (args[1] != NULL && okname(args[1])) {
+			return VLexport(args[1]);
+		} else {
+			return 1;
+		}
+	}
+
+	if (strchr(args[0], '=') != NULL) {
+		return assign(args[0]);
+	}
+
+	// unreachable
+	return 0;
 }

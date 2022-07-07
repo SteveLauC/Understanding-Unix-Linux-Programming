@@ -10,22 +10,25 @@
 
 #define MSG_LEN 128
 
-int main() {
-    struct sockaddr_in client_addr;
-    socklen_t addrlen = 0;
-    char buf[MSG_LEN];
-    int ret = -1;
-    int server_sock = setup();
+int main()
+{
+	struct sockaddr_in client_addr;
+	socklen_t addrlen = 0;
+	char buf[MSG_LEN];
+	int ret = -1;
+	int server_sock = setup();
 
-    while (1) {
-        addrlen = sizeof(client_addr);
-        ret = recvfrom(server_sock, buf, MSG_LEN, 0, (struct sockaddr *)&client_addr, &addrlen);
-        if (ret != -1) {
-            buf[ret] = '\0'; // make it nul-terminated
-            narrate("GOT: ", buf, &client_addr);
-            handle_request(buf, &client_addr, addrlen);
-        } else if (errno == EINTR) { // when the receive is inturrupted by a signal
-            perror("revcfrom");
-        }
-    }
+	while (1) {
+		addrlen = sizeof(client_addr);
+		ret = recvfrom(server_sock, buf, MSG_LEN, 0,
+			       (struct sockaddr *)&client_addr, &addrlen);
+		if (ret != -1) {
+			buf[ret] = '\0'; // make it nul-terminated
+			narrate("GOT: ", buf, &client_addr);
+			handle_request(buf, &client_addr, addrlen);
+		} else if (errno ==
+			   EINTR) { // when the receive is inturrupted by a signal
+			perror("revcfrom");
+		}
+	}
 }
