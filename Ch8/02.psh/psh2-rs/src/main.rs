@@ -66,7 +66,7 @@ fn execute(cmd: &mut Command) {
             );
         }
         Ok(ForkResult::Child) => {
-            cmd.exec();
+            eprintln!("execvp failed: {}", cmd.exec());
         }
         Err(msg) => {
             eprintln!("can not fork(): {}", msg);

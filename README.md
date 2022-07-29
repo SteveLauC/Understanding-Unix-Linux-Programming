@@ -24,8 +24,6 @@ appreciated.
 | -------|-------|--------|
 | [Ch7 03.ticker_demo](https://github.com/SteveLauC/Understanding-Unix-Linux-Programming/blob/main/Ch7/03.ticker_demo/ticker_demo.rs)| Unimplemented| `getitimer` and `setitimer` are missing in crate `libc`|
 | [Ch7 05.bounce](https://github.com/SteveLauC/Understanding-Unix-Linux-Programming/tree/main/Ch7/05.bounce)|Unimplemented|`getitimer` and `setitimer` are missing in crate `libc`|
-| [Ch8 02.psh psh2-rs](https://github.com/SteveLauC/Understanding-Unix-Linux-Programming/blob/main/Ch8/02.psh/psh2-rs/src/main.rs)|Buggy|when an invalid cmd is given, psh2-rs just skip it without any complaint like `command not found`|
-| [Ch8 02.psh psh1-rs](https://github.com/SteveLauC/Understanding-Unix-Linux-Programming/blob/main/Ch8/02.psh/psh1.rs)|Buggy|when an invalid cmd is given, psh1-rs just skip it without any complaint like `command not found`|
 | [Ch9 02.smsh smsh1-rs](https://github.com/SteveLauC/Understanding-Unix-Linux-Programming/blob/main/Ch9/02.smsh/smsh1-rs/src/execute.rs)| Buggy| when an invalid cmd is given, the child process will panic due to the call of `unreachable!()`|
 | [Ch9 02.smsh smsh2-rs](https://github.com/SteveLauC/Understanding-Unix-Linux-Programming/blob/main/Ch9/02.smsh/smsh2-rs/src/execute.rs)|Buggy|when an invalid cmd is given, the child process will panic due to the call of `unreachable!()`|
 | [Ch9 02.smsh smsh3-rs](https://github.com/SteveLauC/Understanding-Unix-Linux-Programming/blob/main/Ch9/02.smsh/smsh3-rs/src/execute.rs)|Buggy|when an invalid cmd is given, the child process will panic due to the call of `unreachable!()`|

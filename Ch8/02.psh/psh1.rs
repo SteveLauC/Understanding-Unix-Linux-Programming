@@ -39,5 +39,5 @@ fn main() {
 }
 
 fn execute(cmd: &mut Command) {
-    cmd.exec();
+    eprintln!("execvp failed: {}", cmd.exec());
 }
