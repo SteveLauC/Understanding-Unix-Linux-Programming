@@ -14,7 +14,8 @@ pub fn execute(mut cmd: Command) -> Option<WaitStatus> {
                 let _ = signal(SIGINT, SigHandler::SigDfl);
                 let _ = signal(SIGQUIT, SigHandler::SigDfl);
             }
-            cmd.exec();
+            eprintln!("{}", cmd.exec());
+            exit(-1);
         },
         Ok(ForkResult::Parent { child: _ }) => {
             return wait().ok(); 
@@ -24,8 +25,4 @@ pub fn execute(mut cmd: Command) -> Option<WaitStatus> {
             exit(-1);
         },
     }
-    eprintln!("This is a bug of my rust version shell(due to the `exec()` function) ,\
-    invalid command will reach unreachable part of code so that \
-    the program will panic for the use of `unreachable!()`");
-    unreachable!()
 }
