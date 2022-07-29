@@ -22,7 +22,8 @@ pub fn execute(mut cmd: Command) -> ProcessRes {
                 let _ = signal(SIGINT, SigHandler::SigDfl);
                 let _ = signal(SIGQUIT, SigHandler::SigDfl);
             }
-            cmd.exec();
+            eprintln!("{}", cmd.exec());
+            exit(-1);
         }
         Ok(ForkResult::Parent { child: _ }) => match wait() {
             Ok(_) => return ProcessRes::Success,
@@ -33,10 +34,4 @@ pub fn execute(mut cmd: Command) -> ProcessRes {
             exit(-1);
         }
     }
-    eprintln!(
-        "This is a bug of my rust version shell(due to the `exec()` function) ,\
-    invalid command will reach unreachable part of code so that \
-    the program/child-process will panic for the use of `unreachable!()`"
-    );
-    unreachable!()
 }
