@@ -1,14 +1,18 @@
 mod mode;
 use mode::*;
 
-use std::env::{args, Args};
-use std::fs::{read_dir, DirEntry, Metadata};
-use std::os::unix::prelude::MetadataExt;
-use std::time::{Duration, UNIX_EPOCH};
+use std::{
+    env::{args, Args},
+    fs::{read_dir, DirEntry, Metadata},
+    os::unix::prelude::MetadataExt,
+    time::{Duration, UNIX_EPOCH},
+};
 
 use chrono::{DateTime, Local};
-use libc::mode_t;
-use users::{get_group_by_gid, get_user_by_uid};
+use nix::{
+    libc::mode_t,
+    unistd::{Gid, Group, Uid, User},
+};
 
 fn do_ls(dirname: &str) {
     match read_dir(dirname) {
@@ -59,7 +63,7 @@ fn show_file_info(filename: String, md: Metadata) {
 fn mode_to_letter(mode: mode_t) -> String {
     let mut mode_str: [char; 10] = ['-'; 10];
     // file type
-    
+
     // another rusty way to get filetype on UNIX is to use `std::os::unix::fs::FileTypeExt`
     // but honestly, it's not suitable here for the reason that `mode_to_letter()` should
     // only have one arg of type mode_t
@@ -116,19 +120,11 @@ fn mode_to_letter(mode: mode_t) -> String {
 }
 
 fn uid_to_name(uid: u32) -> String {
-    if let Some(u) = get_user_by_uid(uid) {
-        u.name().to_str().unwrap().to_owned()
-    } else {
-        uid.to_string()
-    }
+    User::from_uid(Uid::from_raw(uid)).unwrap().unwrap().name
 }
 
 fn gid_to_name(gid: u32) -> String {
-    if let Some(g) = get_group_by_gid(gid) {
-        g.name().to_str().unwrap().to_owned()
-    } else {
-        gid.to_string()
-    }
+    Group::from_gid(Gid::from_raw(gid)).unwrap().unwrap().name
 }
 
 fn main() {
