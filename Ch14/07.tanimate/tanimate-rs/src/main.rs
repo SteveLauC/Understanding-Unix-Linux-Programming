@@ -6,8 +6,6 @@
  * :(
 */
 
-
-use crossbeam::scope;
 use curses_sys::{
     addch, addstr, cbreak, clear, endwin, getch, initscr, move_, noecho, refresh, COLS, LINES,
 };
@@ -17,7 +15,7 @@ use std::env::args;
 use std::ffi::CString;
 use std::process::exit;
 use std::sync::{Arc, Mutex, MutexGuard};
-use std::thread::sleep;
+use std::thread::{scope, sleep};
 use std::time::Duration;
 
 const MAXMSG: usize = 10;
@@ -49,11 +47,10 @@ fn main() {
             /* threads.push(s.spawn(|_| {
                 animate(&mut props[i as usize], &lock);
             })); */
-            s.spawn(|_| {
+            s.spawn(|| {
                 animate(&mut props[i as usize], &lock);
             });
-        })
-        .unwrap();
+        });
     }
 
     loop {

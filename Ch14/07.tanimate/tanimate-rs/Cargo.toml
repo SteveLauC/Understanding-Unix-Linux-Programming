@@ -8,5 +8,4 @@ edition = "2021"
 [dependencies]
 libc = "0.2.126"
 curses-sys = "6.0.0-2"
-crossbeam = "0.8.1"
 rand = "0.8.5"
