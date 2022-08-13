@@ -1,10 +1,12 @@
 mod utility;
 
-use crossbeam::scope;
-use std::env::args;
-use std::io::{BufRead, BufReader};
-use std::net::{TcpListener, TcpStream};
-use std::process::exit;
+use std::{
+    env::args,
+    io::{BufRead, BufReader},
+    net::{TcpListener, TcpStream},
+    process::exit,
+    thread::scope,
+};
 use utility::{hostname, process_request, Status};
 
 fn main() {
@@ -26,9 +28,8 @@ fn main() {
             buffered_reader.read_line(&mut header).unwrap();
 
             scope(|s| {
-                s.spawn(|_| process_request(header, &stream, &status));
-            })
-            .unwrap();
+                s.spawn(|| process_request(header, &stream, &status));
+            });
         }
     }
 }

@@ -7,5 +7,4 @@ edition = "2021"
 
 [dependencies]
 chrono = "0.4.19"
-crossbeam = "0.8.1"
 nix = "0.24.1"
