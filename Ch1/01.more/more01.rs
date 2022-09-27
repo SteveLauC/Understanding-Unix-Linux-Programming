@@ -13,13 +13,12 @@ const LINELEN: i32 = 511; // to make the behavior consistent with more01.c
 
 fn main() {
     // convert Args into a vector
-    let mut av: Vec<String> = env::args().collect();
+    let av = env::args().skip(1).collect::<Vec<String>>();
     let ac: i32 = av.len() as i32;
 
-    if ac == 1 {
+    if ac == 0 {
         do_more(io::stdin().lock());
     } else {
-        av.swap_remove(0);
         for file_name in av.iter() {
             let error_msg: String = format!("can not open {}", file_name);
             let file: File = File::open(file_name).expect(&error_msg);
